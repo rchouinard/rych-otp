@@ -1,12 +1,39 @@
 <?php
+/**
+ * RFC 4226 OTP Library
+ *
+ * @package OTP
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace OTP;
 
+/**
+ * Base32 encoder/decoder class
+ *
+ * @package OTP
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 class Base32
 {
 
+    /**
+     * @var string
+     */
     private $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
+    /**
+     * Decode a base32 string into its original data
+     *
+     * @param string $data Encoded string.
+     * @return string Original data string.
+     * @throws \InvalidArgumentException Thrown when the input data is not
+     *     a valid base2 string.
+     */
     public function decode($data)
     {
         $decoded = '';
@@ -40,6 +67,12 @@ class Base32
         return $decoded;
     }
 
+    /**
+     * Encode data into a base32 string
+     *
+     * @param string $data Original data string.
+     * @return string Encoded string.
+     */
     public function encode($data)
     {
         $encoded = '';

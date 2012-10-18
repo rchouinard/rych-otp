@@ -1,9 +1,10 @@
 <?php
 
 namespace OTP\Test;
+
 use OTP\Base32;
 
-require 'OTP\Base32.php';
+require_once 'OTP\Base32.php';
 
 class Base32Test extends \PHPUnit_Framework_TestCase
 {

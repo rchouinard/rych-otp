@@ -1,9 +1,10 @@
 <?php
 
 namespace OTP\Test;
+
 use OTP\HOTP;
 
-require 'OTP\HOTP.php';
+require_once 'OTP\HOTP.php';
 
 class HOTPTest extends \PHPUnit_Framework_TestCase
 {
