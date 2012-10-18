@@ -22,7 +22,7 @@ generated once per device.
 ```php
 <?php
 
-$hotp = new HOTP;
+$hotp = new OTP\HOTP;
 
 // Generate a 20-byte (160-bit) seed value
 // This will result in a 32-character base32 string
@@ -62,7 +62,7 @@ once they've logged in through normal means.
 ```php
 <?php
 
-$hotp = new HOTP;
+$hotp = new OTP\HOTP;
 
 // Fetch your user object however you like
 $user = new User($userId);
