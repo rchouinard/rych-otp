@@ -1,0 +1,23 @@
+{
+    "name": "rych/otp",
+    "type": "library",
+    "description": "PHP implementation of the OATH one-time password standards.",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Chouinard",
+            "email": "rchouinard@gmail.com"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Rych\\OTP": "src/"
+        }
+    }
+}
