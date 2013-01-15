@@ -3,6 +3,9 @@
 .buildpath
 .project
 
+# NetBeans
+nbproject/
+
 # PHPUnit
 logs/
 phpunit.xml
@@ -13,3 +16,5 @@ phpdoc.xml
 
 # Composer
 composer.phar
+composer.lock
+vendor/
