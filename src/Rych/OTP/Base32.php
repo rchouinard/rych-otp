@@ -2,18 +2,18 @@
 /**
  * RFC 4226 OTP Library
  *
- * @package OTP
+ * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace OTP;
+namespace Rych\OTP;
 
 /**
  * Base32 encoder/decoder class
  *
- * @package OTP
+ * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php

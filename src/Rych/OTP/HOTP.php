@@ -2,22 +2,22 @@
 /**
  * RFC 4226 OTP Library
  *
- * @package OTP
+ * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace OTP;
+namespace Rych\OTP;
 
-use OTP\Base32;
+use Rych\OTP\Base32;
 
-require_once 'OTP/Base32.php';
+require_once 'Rych/OTP/Base32.php';
 
 /**
  * HMAC-Based One-Time Passwords
  *
- * @package OTP
+ * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php

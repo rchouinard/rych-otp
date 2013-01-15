@@ -1,10 +1,10 @@
 <?php
 
-namespace OTP\Test;
+namespace Rych\OTP\Test;
 
-use OTP\HOTP;
+use Rych\OTP\HOTP;
 
-require_once 'OTP\HOTP.php';
+require_once 'Rych/OTP/HOTP.php';
 
 class HOTPTest extends \PHPUnit_Framework_TestCase
 {
