@@ -10,7 +10,7 @@
 
 namespace Rych\OTP;
 
-use Rych\OTP\Base32;
+use Rych\OTP\Seed\Encoder\Base32;
 
 /**
  * HMAC-Based One-Time Passwords
