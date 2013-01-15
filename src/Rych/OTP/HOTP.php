@@ -12,8 +12,6 @@ namespace Rych\OTP;
 
 use Rych\OTP\Base32;
 
-require_once 'Rych/OTP/Base32.php';
-
 /**
  * HMAC-Based One-Time Passwords
  *

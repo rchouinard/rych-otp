@@ -4,8 +4,6 @@ namespace Rych\OTP\Test;
 
 use Rych\OTP\Base32;
 
-require_once 'Rych/OTP/Base32.php';
-
 class Base32Test extends \PHPUnit_Framework_TestCase
 {
 

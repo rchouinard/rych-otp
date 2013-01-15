@@ -4,8 +4,6 @@ namespace Rych\OTP\Test;
 
 use Rych\OTP\HOTP;
 
-require_once 'Rych/OTP/HOTP.php';
-
 class HOTPTest extends \PHPUnit_Framework_TestCase
 {
 
