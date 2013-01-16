@@ -32,7 +32,7 @@ class Hex implements EncoderInterface
      */
     public static function isValid($data)
     {
-        return ((strlen($data) % 2) === 0 && preg_match('/[0-9A-F]+/i', $data) === 1);
+        return ((strlen($data) % 2) === 0 && preg_match('/^[0-9A-F]+$/i', $data) === 1);
     }
 
     /**
