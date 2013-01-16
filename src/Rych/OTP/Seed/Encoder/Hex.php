@@ -63,7 +63,13 @@ class Hex implements EncoderInterface
                 throw new \InvalidArgumentException('Invalid hex string');
             }
 
-            $decoded = hex2bin($data);
+            if (function_exists('hex2dec')) {
+                $decoded = hex2bin($data);
+            } else {
+                for ($i = 0; $i < strlen($data); $i += 2) { 
+                    $decoded .= chr(hexdec($data[$i] . $data[$i + 1])); 
+                }
+            }
         }
 
         return $decoded;
