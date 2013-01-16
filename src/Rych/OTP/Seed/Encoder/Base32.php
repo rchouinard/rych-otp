@@ -87,12 +87,12 @@ class Base32 implements EncoderInterface
         $decoded = '';
 
         if ($data) {
-            // 'ifba====' => 'IFBA'
-            $data = rtrim(strtoupper($data), '=');
-
             if (!$this->isValid($data)) {
                 throw new \InvalidArgumentException('Invalid base32 string');
             }
+
+            // 'ifba====' => 'IFBA'
+            $data = rtrim(strtoupper($data), '=');
 
             $binString = '';
             // 'IFBA' => 01000 00101 00001 00000
