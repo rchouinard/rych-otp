@@ -26,7 +26,7 @@ class Base32 implements EncoderInterface
     /**
      * @var string
      */
-    private $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
     /**
      * Test if an encoded string is compatible with this encoder/decoder
@@ -35,9 +35,10 @@ class Base32 implements EncoderInterface
      * @return boolean Returns true if the encoded string is compatible,
      *     otherwise false.
      */
-    public function isValid($data)
+    public static function isValid($data)
     {
-        return (preg_match("/[{$this->charset}]+=*/i", $data) === 1);
+        $charset = self::CHARSET;
+        return (preg_match("/[{$charset}]+=*/i", $data) === 1);
     }
 
     /**
@@ -49,6 +50,7 @@ class Base32 implements EncoderInterface
     public function encode($data)
     {
         $encoded = '';
+        $charset = self::CHARSET;
 
         if ($data) {
             $binString = '';
@@ -60,7 +62,7 @@ class Base32 implements EncoderInterface
             // 01000001 01000010 => 01000 00101 00001 00000 => 'IFBA'
             for ($offset = 0; $offset < strlen($binString); $offset += 5) {
                 $chunk = str_pad(substr($binString, $offset, 5), 5, 0, STR_PAD_RIGHT);
-                $encoded .= $this->charset[bindec($chunk)];
+                $encoded .= $charset[bindec($chunk)];
             }
 
             // 'IFBA' => 'IFBA===='
@@ -95,7 +97,7 @@ class Base32 implements EncoderInterface
             $binString = '';
             // 'IFBA' => 01000 00101 00001 00000
             foreach (str_split($data) as $char) {
-                $binString .= str_pad(decbin(strpos($this->charset, $char)), 5, 0, STR_PAD_LEFT);
+                $binString .= str_pad(decbin(strpos(self::CHARSET, $char)), 5, 0, STR_PAD_LEFT);
             }
 
             // 01000 00101 00001 00000 => 01000001 01000010

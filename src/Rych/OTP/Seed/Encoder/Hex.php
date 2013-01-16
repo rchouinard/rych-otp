@@ -1,9 +1,25 @@
 <?php
+/**
+ * RFC 4226 OTP Library
+ *
+ * @package Rych\OTP
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace Rych\OTP\Seed\Encoder;
 
 use Rych\OTP\Seed\EncoderInterface;
 
+/**
+ * Hex encoder/decoder class
+ *
+ * @package Rych\OTP
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 class Hex implements EncoderInterface
 {
 
@@ -14,7 +30,7 @@ class Hex implements EncoderInterface
      * @return boolean Returns true if the encoded string is compatible,
      *     otherwise false.
      */
-    public function isValid($data)
+    public static function isValid($data)
     {
         return (preg_match("/[0-9A-F]+/i", $data) === 1);
     }

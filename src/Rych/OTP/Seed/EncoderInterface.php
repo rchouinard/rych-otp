@@ -28,7 +28,7 @@ interface EncoderInterface
      * @return boolean Returns true if the encoded string is compatible,
      *     otherwise false.
      */
-    public function isValid($data);
+    public static function isValid($data);
 
     /**
      * Encode a string of raw data
