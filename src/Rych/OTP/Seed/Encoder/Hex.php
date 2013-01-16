@@ -32,7 +32,7 @@ class Hex implements EncoderInterface
      */
     public static function isValid($data)
     {
-        return (preg_match("/[0-9A-F]+/i", $data) === 1);
+        return ((strlen($data) % 2) === 0 && preg_match('/[0-9A-F]+/i', $data) === 1);
     }
 
     /**
@@ -66,8 +66,8 @@ class Hex implements EncoderInterface
             if (function_exists('hex2dec')) {
                 $decoded = hex2bin($data);
             } else {
-                for ($i = 0; $i < strlen($data); $i += 2) { 
-                    $decoded .= chr(hexdec($data[$i] . $data[$i + 1])); 
+                for ($i = 0; $i < strlen($data); $i += 2) {
+                    $decoded .= chr(hexdec($data[$i] . $data[$i + 1]));
                 }
             }
         }
