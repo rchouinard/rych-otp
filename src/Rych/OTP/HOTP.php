@@ -158,57 +158,88 @@ class HOTP
      * @param integer $count Number of bytes to generate.
      * @return string Random byte string.
      */
-    private function genRandomBytes($count)
+    private function genRandomBytes($length)
     {
-        $count = (int) $count;
-
-        // Try OpenSSL's random generator
+        $length = (int) $length;
         $output = '';
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $strongCrypto = false;
-            // NOTE: The $strongCrypto argument here isn't telling OpenSSL to
-            // generate (or not) cryptographically secure data. It's passed
-            // by reference, and will be set to true or false after the
-            // function call to indicate whether or not OpenSSL is confident
-            // that the generated data can be used for cryptographic operations.
-            $output = openssl_random_pseudo_bytes($count, $strongCrypto);
-            if ($strongCrypto && strlen($output) == $count) {
-                return $output;
+
+        // Windows platforms
+        if ((PHP_OS & "\xDF\xDF\xDF") === 'WIN') {
+            // Try MCrypt first
+            if (function_exists('mcrypt_create_iv')) {
+                $output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+
+            // On Windows, PHP versions < 5.3.4 have a potential blocking
+            // condition with openssl_random_pseudo_bytes(). Versions >= 5.4.3
+            // work exactly like mcrypt_create_iv() internally.
+            } else if (function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>=')) {
+                $output = openssl_random_pseudo_bytes($length);
+            }
+        // Non-Windows platforms
+        } else {
+            // Try OpenSSL first
+            if (function_exists('openssl_random_pseudo_bytes')) {
+                $output = openssl_random_pseudo_bytes($length);
+            // Attempt to read straight from /dev/urandom
+            } else if (is_readable('/dev/urandom') && $fp = @fopen('/dev/urandom', 'rb')) {
+                if (function_exists('stream_set_read_buffer')) {
+                    stream_set_read_buffer($fp, 0);
+                }
+                $output = fread($fp, $length);
+                fclose($fp);
+            // Try mcrypt_create_iv() - basically reads from /dev/urandom, but
+            // slower and without being limited by open_basedir.
+            } else if (function_exists('mcrypt_create_iv')) {
+                $output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             }
         }
 
-        // Try creating an mcrypt IV
-        $output = '';
-        if (function_exists('mcrypt_create_iv')) {
-            $output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
-            if (strlen($output) == $count) {
-                return $output;
-            }
+        // https://github.com/GeorgeArgyros/Secure-random-bytes-in-PHP
+        // We don't read from /dev/urandom here, as we try that above.
+        // If that had worked, we wouldn't be here now.
+        if (strlen($output) != $length) {
+            $output = '';
+            $bitsPerRound = 2; // bits of entropy collected in each clock drift round
+            $msecPerRound = 400; // expected running time of each round in microseconds
+            $hashLength = 20; // SHA-1 Hash length
+            $total = $length; // total bytes of entropy to collect
+
+            do {
+                $bytes = ($total > $hashLength) ? $hashLength : $total;
+                $total -= $bytes;
+
+                $entropy = rand() . uniqid(mt_rand(), true);
+                $entropy .= implode('', @fstat(@fopen(__FILE__, 'r')));
+                $entropy .= memory_get_usage();
+
+                for ($i = 0; $i < 3; ++$i) {
+                    $counter1 = microtime(true);
+                    $var = sha1(mt_rand());
+                    for ($j = 0; $j < 50; ++$j) {
+                        $var = sha1($var);
+                    }
+                    $counter2 = microtime(true);
+                    $entropy .= $counter1 . $counter2;
+                }
+
+                $rounds = (int) ($msecPerRound * 50 / (int) (($counter2 - $counter1) * 1000000));
+                $iterations = $bytes * (int) (ceil(8 / $bitsPerRound));
+
+                for ($i = 0; $i < $iterations; ++$i) {
+                    $counter1 = microtime();
+                    $var = sha1(mt_rand());
+                    for ($j = 0; $j < $rounds; ++$j) {
+                        $var = sha1($var);
+                    }
+                    $counter2 = microtime();
+                    $entropy .= $counter1 . $counter2;
+                }
+
+                $output .= sha1($entropy, true);
+            } while ($length > strlen($output));
         }
 
-        // Try reading from /dev/urandom, if present
-        $output = '';
-        if (is_readable('/dev/urandom') && ($fh = fopen('/dev/urandom', 'rb'))) {
-            $output = fread($fh, $count);
-            fclose($fh);
-            if (strlen($output) == $count) {
-                return $output;
-            }
-        }
-
-        // Fall back to a locally generated "random" string as last resort
-        $randomState = microtime();
-        if (function_exists('getmypid')) {
-            $randomState .= getmypid();
-        }
-        $output = '';
-        for ($i = 0; $i < $count; $i += 16) {
-            $randomState = md5(microtime() . $randomState);
-            $output .= md5($randomState, true);
-        }
-        $output = substr($output, 0, $count);
-
-        return $output;
+        return substr($output, 0, $length);
     }
 
 }
