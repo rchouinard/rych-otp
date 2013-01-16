@@ -38,7 +38,7 @@ class Base32 implements EncoderInterface
     public static function isValid($data)
     {
         $charset = self::CHARSET;
-        return (preg_match("/[{$charset}]+=*/i", $data) === 1);
+        return ((strlen($data) % 8) === 0 && preg_match("/^[{$charset}]+=*$/i", $data) === 1);
     }
 
     /**
