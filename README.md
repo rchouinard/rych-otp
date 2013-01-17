@@ -7,7 +7,7 @@ compliant HOTP implementation for PHP.
 Quick Start
 -----------
 
-The main class is `OTP\HOTP`, which provides methods for generating
+The main class is `Rych\OTP\HOTP`, which provides methods for generating
 client seeds, generating OTPs based on a counter, and verifying those
 OTPs with an optional window for error.
 
@@ -22,13 +22,13 @@ generated once per device.
 ```php
 <?php
 
-$hotp = new OTP\HOTP;
+$hotp = new Rych\OTP\Seed;
 
 // Generate a 20-byte (160-bit) seed value
 // This will result in a 32-character base32 string
 //
 // Default is 20, so specifying it is completely optional
-$seed = $hotp->generateSeed(20);
+$seed = Seed::generate(20);
 
 // Fetch your user object however you like
 $user = new User($userId);
@@ -62,13 +62,13 @@ once they've logged in through normal means.
 ```php
 <?php
 
-$hotp = new OTP\HOTP;
+$hotp = new Rych\OTP\HOTP;
 
 // Fetch your user object however you like
 $user = new User($userId);
 
 // Fetch the OTP seed value stored when we configured the device
-$hotp->setSeed($user->getOTPSeed());
+$otpSeed = $user->getOTPSeed();
 
 // We also need the sequential counter value we're currently on
 // This value is incremented by one on each successful verification,
@@ -76,19 +76,13 @@ $hotp->setSeed($user->getOTPSeed());
 $otpCounter = $user->getOTPCounter();
 
 // Now we check the provided OTP using the stored counter value
-// The last argument, 4, specifies a window to account for errors
-//
-// If the user clicks refresh on their device a few times to generate
-// a new OTP without actually validating, the counters will be out
-// of sync. This argument means that the user can do so up to 4 times
-// before they're locked out.
 //
 // verifyOTP() returns the counter which generated the OTP on success,
 // so we can re-sync our value.
-if ($counter = $hotp->verifyOTP($_GET['otp'], $otpCounter, 4)) {
+if ($counter = $hotp->validate($otpSeed, $_GET['otp'], $otpCounter)) {
     $user->setOTPCounter($counter + 1);
     $user->save();
-    
+
     // User has now completed OTP authentication.
 }
 ```

@@ -37,7 +37,7 @@ class EncoderTest extends TestCase
         $encoder = new Base32Encoder;
         foreach ($vectors as $base64 => $base32) {
             $this->assertEquals($base32, $encoder->encode(base64_decode($base64)));
-            $this->assertEquals(base64_decode($base64), $encoder->decode($base32));
+            $this->assertEquals(base64_decode($base64), $encoder->decode($base32), $base32);
         }
     }
 

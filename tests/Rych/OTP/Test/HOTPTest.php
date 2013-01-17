@@ -2,68 +2,61 @@
 
 namespace Rych\OTP\Test;
 
+use PHPUnit_Framework_TestCase as TestCase;
 use Rych\OTP\HOTP;
 
-class HOTPTest extends \PHPUnit_Framework_TestCase
+class HOTPTest extends TestCase
 {
 
-    /**
-     * @test
-     */
-    public function testGenerateSeed()
+    public function testCalculateMethodReturnsValidValuesForKnownInput()
     {
         $hotp = new HOTP;
+        $hotp->setDigits(6);
 
-        $seed = $hotp->generateSeed(10);
-        $this->assertRegExp('/^[A-Z2-7]{16}$/', $seed);
-        $this->assertEquals($seed, $hotp->getSeed());
+        // Check a large range of counter values
+        // Cap at 32-bit PHP_INT_MAX for now
+        $this->assertEquals('268911', $hotp->calculate('5345435245544b4559317365637265746b657932', 0));
+        $this->assertEquals('473411', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x40000000));
+        $this->assertEquals('109402', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x7FFFFFFF));
 
-        $seed = $hotp->generateSeed(20);
-        $this->assertRegExp('/^[A-Z2-7]{32}$/', $seed);
-        $this->assertEquals($seed, $hotp->getSeed());
+        // Same as above, with 8 digits
+        $hotp->setDigits(8);
+        $this->assertEquals('14268911', $hotp->calculate('5345435245544b4559317365637265746b657932', 0));
+        $this->assertEquals('90473411', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x40000000));
+        $this->assertEquals('26109402', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x7FFFFFFF));
+
+        // Also checks that the seed formats are detected correctly
+        $hotp->setDigits(6);
+        $this->assertEquals('046095', $hotp->calculate('5345435245544b4559317365637265746b657932', 42), 'HOTP object failed to produce expected value given known hex seed.');
+        $this->assertEquals('046095', $hotp->calculate('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', 42), 'HOTP object failed to produce expected value given known base32 seed.');
+        $this->assertEquals('046095', $hotp->calculate('SECRETKEY1secretkey2', 42), 'HOTP object failed to produce expected value given known raw seed.');
     }
 
-    /**
-     * @test
-     */
-    public function testGenerateOTP()
+    public function testValidateMethodConfirmsKnownValues()
     {
         $hotp = new HOTP;
+        $hotp->setDigits(6);
+        $hotp->setWindow(4);
 
-        $hotp->setSeed('22K3UFWSQLCDGNXH');
-        $this->assertEquals('466474', $hotp->generateOTP(45016826));
-        $this->assertEquals('451890', $hotp->generateOTP('1'));
-        $this->assertEquals('951917', $hotp->generateOTP('2'));
-        $this->assertEquals('42114359', $hotp->generateOTP('123456', 8));
+        // Completely wrong guess
+        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '123456', 0));
 
-        $hotp->setSeed('GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ');
-        $this->assertEquals('616632', $hotp->generateOTP(45016826));
-        $this->assertEquals('287082', $hotp->generateOTP('1'));
-        $this->assertEquals('359152', $hotp->generateOTP('2'));
-        $this->assertEquals('96746508', $hotp->generateOTP('123456', 8));
-    }
+        // Given OTP is ahead of our counter, but within the window
+        $this->assertEquals(104, $hotp->validate('5345435245544b4559317365637265746b657932', '150463', 100));
 
-    /**
-     * @test
-     */
-    public function testVerifyOTP()
-    {
-        $hotp = new HOTP;
+        // Given OTP is behind our counter (by one, in this case)
+        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '150463', 105));
 
-        $hotp->setSeed('22K3UFWSQLCDGNXH');
-        // Test that look-ahead counter correction works as expected
-        // Counter values higher than expected, but still within the window,
-        // should work. Lower values should not, lest we find that old OTPs
-        // can be reused.
-        //
-        // Counter value = 100, OTP generated with 100
-        $this->assertTrue('100' == $hotp->verifyOTP('785234', '100'));
+        // Given OTP is ahead of our counter, but outside the window (by one)
+        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '069682', 100));
 
-        // Counter value = 98, OTP generated with 100
-        $this->assertTrue('100' == $hotp->verifyOTP('785234', '98', 4));
+        // Make sure we can't validate when digits are wrong
+        $this->assertSame(0, $hotp->validate('5345435245544b4559317365637265746b657932', '268911', 0));
+        $this->assertSame(false, $hotp->validate('5345435245544b4559317365637265746b657932', '14268911', 0));
+        $hotp->setDigits(8);
+        $this->assertSame(false, $hotp->validate('5345435245544b4559317365637265746b657932', '268911', 0));
+        $this->assertSame(0, $hotp->validate('5345435245544b4559317365637265746b657932', '14268911', 0));
 
-        // Counter value = 101, OTP generated with 100
-        $this->assertFalse((bool) $hotp->verifyOTP('785234', '101', 4));
     }
 
 }
