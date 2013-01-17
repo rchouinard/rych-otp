@@ -4,6 +4,8 @@ OATH-OTP Implementation for PHP
 This library provides an [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt)
 compliant HOTP implementation for PHP.
 
+Build status: [![Build Status](https://travis-ci.org/rchouinard/rych-otp.png?branch=master)](https://travis-ci.org/rchouinard/rych-otp)
+
 Quick Start
 -----------
 
