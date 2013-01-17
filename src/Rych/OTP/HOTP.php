@@ -34,6 +34,28 @@ class HOTP
     private $window = 0;
 
     /**
+     * Class constructor.
+     *
+     * @param array $options
+     * @return void
+     */
+    public function __construct(array $options = array ())
+    {
+        foreach (array_change_key_case($options, CASE_LOWER) as $option => $value) {
+            switch ($option) {
+                case 'digits':
+                    $this->setDigits($value);
+                    break;
+                case 'window':
+                    $this->setWindow($value);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
      * @return integer
      */
     public function getDigits()
@@ -83,7 +105,7 @@ class HOTP
         }
 
         // Counter must be a 64-bit integer, so we fake it.
-        $counter = pack('N*', 0) . pack('N*', $counter);
+        $counter = pack('N*', 0) . pack('N*', (int) $counter);
         $hash = hash_hmac('sha1', $counter, $seed->getValue(Seed::FORMAT_RAW), true);
 
         return $this->truncate($hash) % pow(10, $this->digits);
@@ -100,15 +122,11 @@ class HOTP
      */
     public function validate($seed, $otp, $counter = 0)
     {
-        if (!$seed instanceof Seed) {
-            $seed = new Seed($seed);
-        }
-
         $valid = false;
         $counter = (int) $counter;
 
         for ($current = $counter; $current <= $counter + $this->window; ++$current) {
-            if ($otp == $this->calculate($seed->getValue(Seed::FORMAT_RAW), $current)) {
+            if ($otp == $this->calculate($seed, $current)) {
                 $valid = $current;
                 break;
             }

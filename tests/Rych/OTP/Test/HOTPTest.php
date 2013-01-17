@@ -8,55 +8,45 @@ use Rych\OTP\HOTP;
 class HOTPTest extends TestCase
 {
 
-    public function testCalculateMethodReturnsValidValuesForKnownInput()
+    private $hotp;
+
+    public function setUp()
     {
-        $hotp = new HOTP;
-        $hotp->setDigits(6);
-
-        // Check a large range of counter values
-        // Cap at 32-bit PHP_INT_MAX for now
-        $this->assertEquals('268911', $hotp->calculate('5345435245544b4559317365637265746b657932', 0));
-        $this->assertEquals('473411', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x40000000));
-        $this->assertEquals('109402', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x7FFFFFFF));
-
-        // Same as above, with 8 digits
-        $hotp->setDigits(8);
-        $this->assertEquals('14268911', $hotp->calculate('5345435245544b4559317365637265746b657932', 0));
-        $this->assertEquals('90473411', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x40000000));
-        $this->assertEquals('26109402', $hotp->calculate('5345435245544b4559317365637265746b657932', 0x7FFFFFFF));
-
-        // Also checks that the seed formats are detected correctly
-        $hotp->setDigits(6);
-        $this->assertEquals('046095', $hotp->calculate('5345435245544b4559317365637265746b657932', 42), 'HOTP object failed to produce expected value given known hex seed.');
-        $this->assertEquals('046095', $hotp->calculate('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', 42), 'HOTP object failed to produce expected value given known base32 seed.');
-        $this->assertEquals('046095', $hotp->calculate('SECRETKEY1secretkey2', 42), 'HOTP object failed to produce expected value given known raw seed.');
+        $this->hotp = new HOTP;
     }
 
-    public function testValidateMethodConfirmsKnownValues()
+    public function getRFC4226TestVectors()
     {
-        $hotp = new HOTP;
-        $hotp->setDigits(6);
-        $hotp->setWindow(4);
+        return array (
+            array (0, '755224'),
+            array (1, '287082'),
+            array (2, '359152'),
+            array (3, '969429'),
+            array (4, '338314'),
+            array (5, '254676'),
+            array (6, '287922'),
+            array (7, '162583'),
+            array (8, '399871'),
+            array (9, '520489'),
+        );
+    }
 
-        // Completely wrong guess
-        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '123456', 0));
+    /**
+     * @dataProvider getRFC4226TestVectors()
+     */
+    public function testRFC4226TestVectors($counter, $otp)
+    {
+        $seed = '3132333435363738393031323334353637383930';
+        $this->assertEquals($otp, $this->hotp->calculate($seed, $counter));
+    }
 
-        // Given OTP is ahead of our counter, but within the window
-        $this->assertEquals(104, $hotp->validate('5345435245544b4559317365637265746b657932', '150463', 100));
-
-        // Given OTP is behind our counter (by one, in this case)
-        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '150463', 105));
-
-        // Given OTP is ahead of our counter, but outside the window (by one)
-        $this->assertFalse($hotp->validate('5345435245544b4559317365637265746b657932', '069682', 100));
-
-        // Make sure we can't validate when digits are wrong
-        $this->assertSame(0, $hotp->validate('5345435245544b4559317365637265746b657932', '268911', 0));
-        $this->assertSame(false, $hotp->validate('5345435245544b4559317365637265746b657932', '14268911', 0));
-        $hotp->setDigits(8);
-        $this->assertSame(false, $hotp->validate('5345435245544b4559317365637265746b657932', '268911', 0));
-        $this->assertSame(0, $hotp->validate('5345435245544b4559317365637265746b657932', '14268911', 0));
-
+    /**
+     * @dataProvider getRFC4226TestVectors()
+     */
+    public function testValidateRFC4226TestVectors($counter, $otp)
+    {
+        $seed = '3132333435363738393031323334353637383930';
+        $this->assertEquals($counter, $this->hotp->validate($seed, $otp, $counter));
     }
 
 }
