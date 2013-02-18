@@ -2,7 +2,7 @@
     "name": "rych/otp",
     "type": "library",
     "description": "PHP implementation of the OATH one-time password standards.",
-    "keywords": [],
+    "keywords": ["security", "otp", "hotp", "totp", "oath", "rfc4226", "rfc6238"],
     "license": "MIT",
     "authors": [
         {
