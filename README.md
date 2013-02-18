@@ -1,90 +1,62 @@
 OATH-OTP Implementation for PHP
 ===============================
 
-This library provides an [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt)
-compliant HOTP implementation for PHP.
+This library provides HMAC and time-based one-time password functionality as
+defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
+[RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
 
 Build status: [![Build Status](https://travis-ci.org/rchouinard/rych-otp.png?branch=master)](https://travis-ci.org/rchouinard/rych-otp)
 
 Quick Start
 -----------
 
-The main class is `Rych\OTP\HOTP`, which provides methods for generating
-client seeds, generating OTPs based on a counter, and verifying those
-OTPs with an optional window for error.
+Enabling one-time passwords in an application is fairly easy. A user will
+register and verify their authenticator device with the application, and
+subsequent logins should require the entry of a one-time password displayed on
+the device as well as the usual username and password.
 
-A full two-factor authentication implementation based on this library
-would require additional integration outside of the project scope.
+A shared secret is generated and stored with the application and configured
+on the user's device during the registration phase. All OTP operations will
+then use the same shared secret for that user. A user should only have one
+shared secret, and a shared secret should belong to only one user.
 
-### Generating a Seed
-
-Seed values MUST be unique per client device, and should only be
-generated once per device.
+The library makes generating and sharing secret keys easy.
 
 ```php
 <?php
 
-$hotp = new Rych\OTP\Seed;
+use Rych\OTP\Seed;
 
-// Generate a 20-byte (160-bit) seed value
-// This will result in a 32-character base32 string
-//
-// Default is 20, so specifying it is completely optional
-$seed = Seed::generate(20);
+// Generates a 20-byte (160-bit) secret key
+$otpSeed = Seed::generate();
 
-// Fetch your user object however you like
-$user = new User($userId);
-
-// Implementation details will vary here, but the point is to store
-// the seed value with the user record for future use.
-$user->setOTPSeed($seed);
-
-// We now need to get the seed to the user so they can configure their
-// device. The easiest way, supported by Google Authenticator, is to
-// use a QR code.
-//
-// See http://code.google.com/p/google-authenticator/wiki/KeyUriFormat
-$appLabel = urlencode('My Cool OTP App');
-$qr = new QRCode("otpauth://hotp/$appLabel?secret=$seed");
-$qr->render();
+// Display secret key details
+printf("Secret (HEX): %s\n", $otpSeed->getValue(Seed::FORMAT_HEX));
+printf("Secret (BASE32): %s\n", $otpSeed->getValue(Seed::FORMAT_BASE32));
 ```
 
-Once the client device is configured, it should start generating OTPs
-for us! It's best to then verify that the device is working as expected
-by verifying one or two OTPs from the client device before flagging the
-user's acount to require the device for authentication. Implementation
-details for this step are left to the developer.
-
-### Verifying an OTP
-
-Once a user has registered a client device with our application, the
-hardest part is over. Now we just need to prompt the user for an OTP
-once they've logged in through normal means.
+When a user attempts to login, they should be prompted to provide the OTP
+displayed on their device. The library can then validate the provided OTP
+using the user's shared secret key.
 
 ```php
 <?php
 
-$hotp = new Rych\OTP\HOTP;
+use Rych\OTP\HOTP;
 
-// Fetch your user object however you like
-$user = new User($userId);
+$otpSeed = $userObject->getOTPSeed();
+$otpCounter = $userObject->getOTPCounter();
+$providedOTP = $requestObject->getPost('otp');
 
-// Fetch the OTP seed value stored when we configured the device
-$otpSeed = $user->getOTPSeed();
+$otplib = new HOTP($otpSeed);
+if ($otplib->verify($providedOTP, $otpCounter)) {
+    // Advance the application's stored counter
+    // This bit is important for HOTP but not done for TOTP
+    $userObject->incrementOTPCounter($otplib->getLastValidCounterOffset() + 1);
 
-// We also need the sequential counter value we're currently on
-// This value is incremented by one on each successful verification,
-// as we'll see below.
-$otpCounter = $user->getOTPCounter();
-
-// Now we check the provided OTP using the stored counter value
-//
-// verifyOTP() returns the counter which generated the OTP on success,
-// so we can re-sync our value.
-if ($counter = $hotp->validate($otpSeed, $_GET['otp'], $otpCounter)) {
-    $user->setOTPCounter($counter + 1);
-    $user->save();
-
-    // User has now completed OTP authentication.
+    // Now the user is authenticated
 }
 ```
+
+Time-based OTPs are handled the same way, except you don't have a counter value
+to track or increment.

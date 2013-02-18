@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" verbose="true" bootstrap="vendor/autoload.php">
-    <php>
-        <includePath>./src</includePath>
-    </php>
     <testsuites>
-        <testsuite name="Rych\\OTP Tests">
+        <testsuite name="Rych OATH-OTP Tests">
             <directory suffix="Test.php" phpVersion="5.3.3" phpVersionOperator=">=">./tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
 </phpunit>

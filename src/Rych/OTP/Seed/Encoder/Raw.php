@@ -1,6 +1,6 @@
 <?php
 /**
- * RFC 4226 OTP Library
+ * OATH-OTP Library
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
@@ -56,17 +56,7 @@ class Raw implements EncoderInterface
      */
     public function decode($data)
     {
-        $decoded = '';
-
-        if ($data) {
-            if (!$this->isValid($data)) {
-                throw new \InvalidArgumentException('Invalid raw string');
-            }
-
-            $decoded = $data;
-        }
-
-        return $decoded;
+        return $data;
     }
 
 }

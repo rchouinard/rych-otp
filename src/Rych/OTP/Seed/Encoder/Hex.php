@@ -1,6 +1,6 @@
 <?php
 /**
- * RFC 4226 OTP Library
+ * OATH-OTP Library
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>

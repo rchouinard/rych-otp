@@ -1,6 +1,6 @@
 <?php
 /**
- * RFC 4226 OTP Library
+ * OATH-OTP Library
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
@@ -10,71 +10,68 @@
 
 namespace Rych\OTP;
 
-use Rych\OTP\Seed;
+use Rych\OTP\OTP;
 
 /**
- * HMAC-Based One-Time Passwords
+ * RFC-4226 HMAC-Based One-Time Passwords
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
-class HOTP
+class HOTP extends OTP
 {
 
     /**
      * @var integer
      */
-    private $digits = 6;
+    protected $window;
 
     /**
      * @var integer
      */
-    private $window = 0;
+    protected $lastValidCounterOffset;
 
     /**
-     * Class constructor.
+     * Class constructor
      *
-     * @param array $options
+     * @param string|Rych\OTP\Seed $secret The shared secret key as a string or
+     *     an instance of {@link Rych\OTP\Seed}.
+     * @param array $options An array of configuration options.
      * @return void
      */
-    public function __construct(array $options = array ())
+    public function __construct($secret, array $options = array ())
     {
-        foreach (array_change_key_case($options, CASE_LOWER) as $option => $value) {
-            switch ($option) {
-                case 'digits':
-                    $this->setDigits($value);
-                    break;
-                case 'window':
-                    $this->setWindow($value);
-                    break;
-                default:
-                    break;
-            }
-        }
+        $options = array_merge(
+            array (
+                'window' => 4,
+            ),
+            array_change_key_case($options, CASE_LOWER)
+        );
+
+        $this->setWindow($options['window']);
+        parent::__construct($secret, $options);
     }
 
     /**
-     * @return integer
+     * Set the window value
+     *
+     * @param integer $window The window value
+     * @return Rych\OTP\HOTP Returns an instance of self for method chaining.
      */
-    public function getDigits()
+    public function setWindow($window)
     {
-        return $this->digits;
-    }
+        $window = abs(intval($window));
+        $this->window = $window;
 
-    /**
-     * @param integer $value
-     * @return self
-     */
-    public function setDigits($value)
-    {
-        $this->digits = (int) max(min($value, 8), 6);
         return $this;
     }
 
     /**
-     * @return integer
+     * Get the window value
+     *
+     * @return integer The window value.
      */
     public function getWindow()
     {
@@ -82,77 +79,44 @@ class HOTP
     }
 
     /**
-     * @param integer $value
-     * @return self
-     */
-    public function setWindow($value)
-    {
-        $this->window = (int) max(min($value, PHP_INT_MAX), 0);
-        return $this;
-    }
-
-    /**
-     * Generate an OTP.
+     * Validate an OTP
      *
-     * @param Seed|string $seed The seed value.
-     * @param integer $counter The counter value. Defaults to 0.
-     * @return integer Returns the generated OTP.
-     */
-    public function calculate($seed, $counter = 0)
-    {
-        if (!$seed instanceof Seed) {
-            $seed = new Seed($seed);
-        }
-
-        // Counter must be a 64-bit integer, so we fake it.
-        $counter = pack('N*', 0) . pack('N*', (int) $counter);
-        $hash = hash_hmac('sha1', $counter, $seed->getValue(Seed::FORMAT_RAW), true);
-
-        return $this->truncate($hash) % pow(10, $this->digits);
-    }
-
-    /**
-     * Validate an OTP.
-     *
-     * @param Seed|string $seed The seed value.
      * @param string $otp The OTP value.
      * @param integer $counter The counter value. Defaults to 0.
-     * @return integer Returns the counter value which matched on success, or
-     *     false on failure.
+     * @return boolean Returns true if the supplied counter value is valid
+     *     within the configured counter window, false otherwise.
      */
-    public function validate($seed, $otp, $counter = 0)
+    public function validate($otp, $counter = 0)
     {
-        $valid = false;
-        $counter = (int) $counter;
+        $window = $this->getWindow();
 
-        for ($current = $counter; $current <= $counter + $this->window; ++$current) {
-            if ($otp == $this->calculate($seed, $current)) {
-                $valid = $current;
+        $valid = false;
+        $offset = null;
+        for ($current = $counter; $current <= $counter + $window; ++$current) {
+            if ($otp == $this->calculate($current)) {
+                $valid = true;
+                $offset = $current - $counter;
                 break;
             }
         }
+        $this->lastValidCounterOffset = $offset;
 
         return $valid;
     }
 
     /**
-     * Extract 4 bytes from a hash value.
+     * Get the counter offset value of the last valid counter value
      *
-     * Uses the method defined in RFC 4226, Section 5.3.
+     * Useful to determine how far ahead the client counter is of the server
+     * value. Returned value will be between 0 and the configured window value.
+     * A return value of null indicates that the last counter verification
+     * failed.
      *
-     * @param string $hash HMAC-SHA1 hash value of the counter using the raw
-     *     seed as the key.
-     * @return integer Truncated hash value.
+     * @return integer Returns the offset of the last valid counter value.
      */
-    private function truncate($hash)
+    public function getLastValidCounterOffset()
     {
-        $offset = ord($hash[19]) & 0xf;
-        $value  = (ord($hash[$offset + 0]) & 0x7f) << 24;
-        $value |= (ord($hash[$offset + 1]) & 0xff) << 16;
-        $value |= (ord($hash[$offset + 2]) & 0xff) << 8;
-        $value |= (ord($hash[$offset + 3]) & 0xff);
-
-        return $value;
+        return $this->lastValidCounterOffset;
     }
 
 }

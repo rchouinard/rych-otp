@@ -1,6 +1,6 @@
 <?php
 /**
- * RFC 4226 OTP Library
+ * OATH-OTP Library
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
@@ -227,8 +227,7 @@ class Seed
                 $output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
 
             // On Windows, PHP versions < 5.3.4 have a potential blocking
-            // condition with openssl_random_pseudo_bytes(). Versions >= 5.4.3
-            // work exactly like mcrypt_create_iv() internally.
+            // condition with openssl_random_pseudo_bytes().
             } else if (function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>=')) {
                 $output = openssl_random_pseudo_bytes($length);
             }
