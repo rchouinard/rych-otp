@@ -22,7 +22,13 @@
     },
     "autoload": {
         "psr-0": {
-            "Rych": "src/"
+            "Rych\\OTP": ""
+        }
+    },
+    "target-dir": "Rych/OTP",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
         }
     }
 }
