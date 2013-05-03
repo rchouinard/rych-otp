@@ -1,25 +1,28 @@
 {
     "name": "rych/otp",
     "type": "library",
-    "description": "PHP implementation of the OATH one-time password standards.",
+    "description": "PHP implementation of the OATH one-time password standards",
     "keywords": ["security", "otp", "hotp", "totp", "oath", "rfc4226", "rfc6238"],
+    "homepage": "https://github.com/rchouinard/rych-otp",
     "license": "MIT",
     "authors": [
         {
             "name": "Ryan Chouinard",
-            "email": "rchouinard@gmail.com"
+            "email": "rchouinard@gmail.com",
+            "homepage": "http://ryanchouinard.com"
         }
     ],
     "require": {
-        "php": ">= 5.3.3",
-        "ext-hash": "*"
+        "php": ">= 5.3.4",
+        "ext-hash": "*",
+        "rych/random": "1.0.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
         "psr-0": {
-            "Rych\\OTP": "src/"
+            "Rych": "src/"
         }
     }
 }

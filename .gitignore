@@ -1,20 +1,4 @@
-# Eclipse
-.settings/
-.buildpath
-.project
-
-# NetBeans
-nbproject/
-
-# PHPUnit
-logs/
-phpunit.xml
-
-# PHPDoc2
-docs/
-phpdoc.xml
-
-# Composer
-composer.phar
-composer.lock
+nbproject/private/
 vendor/
+composer.lock
+phpunit.xml
