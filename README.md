@@ -60,3 +60,16 @@ if ($otplib->verify($providedOTP, $otpCounter)) {
 
 Time-based OTPs are handled the same way, except you don't have a counter value
 to track or increment.
+
+
+Installation
+------------
+
+Install using [Composer](http://getcomposer.org/):
+```json
+{
+  "require" {
+    "rych/otp": "1.0.*@dev"
+  }
+}
+```
