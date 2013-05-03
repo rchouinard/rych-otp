@@ -4,7 +4,7 @@
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @copyright Copyright (c) 2013, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
@@ -17,7 +17,7 @@ use Rych\OTP\OTP;
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @copyright Copyright (c) 2013, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class HOTP extends OTP
