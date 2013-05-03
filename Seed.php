@@ -32,7 +32,7 @@ class Seed
     const FORMAT_RAW = 'raw';
 
     /**
-     * @var EncoderInterface
+     * @var \Rych\Random\Encoder\EncoderInterface
      */
     private $encoder;
 

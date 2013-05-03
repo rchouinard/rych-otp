@@ -24,7 +24,7 @@ class OTP
 {
 
     /**
-     * @var Rych\OTP\Seed
+     * @var \Rych\OTP\Seed
      */
     protected $secret;
 
@@ -41,7 +41,7 @@ class OTP
     /**
      * Class constructor
      *
-     * @param string|Rych\OTP\Seed $secret The shared secret key.
+     * @param string|\Rych\OTP\Seed $secret The shared secret key.
      * @param array $options An array of options to be used when generating
      *     one-time passwords.
      * @return void
@@ -65,8 +65,8 @@ class OTP
     /**
      * Set the shared secret key
      *
-     * @param string|Rych\OTP\Seed $secret The shared secret key.
-     * @return Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @param string|\Rych\OTP\Seed $secret The shared secret key.
+     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
      */
     public function setSecret($secret)
     {
@@ -81,7 +81,7 @@ class OTP
     /**
      * Get the shared secret key
      *
-     * @return Rych\OTP\Seed Returns a Seed object instance which represents
+     * @return \Rych\OTP\Seed Returns a Seed object instance which represents
      *     the shared secret key.
      */
     public function getSecret()
@@ -93,8 +93,8 @@ class OTP
      * Set the hash function
      *
      * @param string $hashFunction The hash function.
-     * @return Rych\OTP\OTP Returns an instance of self for method chaining.
-     * @throws InvalidArgumentException Thrown if the supplied hash function is
+     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @throws \InvalidArgumentException Thrown if the supplied hash function is
      *     not supported.
      */
     public function setHashFunction($hashFunction)
@@ -122,9 +122,9 @@ class OTP
      * Set the number of digits in the one-time password
      *
      * @param integer $digits The number of digits in a one-time password.
-     * @return Rych\OTP\OTP Returns an instance of self for method chaining.
-     * @throws InvalidArgumentException Thrown if the requested number of digits
-     *     is outside of the inclusive range 1-10.
+     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @throws \InvalidArgumentException Thrown if the requested number of
+     *     digits is outside of the inclusive range 1-10.
      */
     public function setDigits($digits)
     {

@@ -36,8 +36,8 @@ class HOTP extends OTP
     /**
      * Class constructor
      *
-     * @param string|Rych\OTP\Seed $secret The shared secret key as a string or
-     *     an instance of {@link Rych\OTP\Seed}.
+     * @param string|\Rych\OTP\Seed $secret The shared secret key as a string or
+     *     an instance of {@link \Rych\OTP\Seed}.
      * @param array $options An array of configuration options.
      * @return void
      */
@@ -58,7 +58,7 @@ class HOTP extends OTP
      * Set the window value
      *
      * @param integer $window The window value
-     * @return Rych\OTP\HOTP Returns an instance of self for method chaining.
+     * @return \Rych\OTP\HOTP Returns an instance of self for method chaining.
      */
     public function setWindow($window)
     {

@@ -31,8 +31,8 @@ class TOTP extends HOTP
     /**
      * Class constructor
      *
-     * @param string|Rych\OTP\Seed $secret The shared secret key as a string or
-     *     an instance of {@link Rych\OTP\Seed}.
+     * @param string|\Rych\OTP\Seed $secret The shared secret key as a string or
+     *     an instance of {@link \Rych\OTP\Seed}.
      * @param array $options An array of configuration options.
      * @return void
      */
@@ -54,7 +54,7 @@ class TOTP extends HOTP
      * Set the timestep value
      *
      * @param integer $timeStep The timestep value.
-     * @return Rych\OTP\TOTP Returns an instance of self for method chaining.
+     * @return \Rych\OTP\TOTP Returns an instance of self for method chaining.
      */
     public function setTimeStep($timeStep)
     {
