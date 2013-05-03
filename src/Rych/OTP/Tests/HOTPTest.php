@@ -1,6 +1,6 @@
 <?php
 
-namespace Rych\OTP\Test;
+namespace Rych\OTP\Tests;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Rych\OTP\HOTP;
