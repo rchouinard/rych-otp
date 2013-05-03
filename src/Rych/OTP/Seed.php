@@ -10,10 +10,11 @@
 
 namespace Rych\OTP;
 
-use Rych\OTP\Seed\EncoderInterface;
-use Rych\OTP\Seed\Encoder\Base32 as Base32Encoder;
-use Rych\OTP\Seed\Encoder\Hex as HexEncoder;
-use Rych\OTP\Seed\Encoder\Raw as RawEncoder;
+use Rych\Random\Random;
+use Rych\Random\Encoder\EncoderInterface;
+use Rych\Random\Encoder\Base32Encoder;
+use Rych\Random\Encoder\HexEncoder;
+use Rych\Random\Encoder\RawEncoder;
 
 /**
  * OTP Seed/Key
@@ -152,9 +153,9 @@ class Seed
 
         // Auto-detect
         if ($format === null) {
-            if (HexEncoder::isValid($seed)) {
+            if (preg_match('/^[0-9a-f]+$/i', $seed)) {
                 $encoder = new HexEncoder;
-            } else if (Base32Encoder::isValid($seed)) {
+            } else if (preg_match('/^[2-7a-z]+$/i', $seed)) {
                 $encoder = new Base32Encoder;
             }
         // User-specified
@@ -199,103 +200,18 @@ class Seed
      *
      * @param integer $bytes Number of bytes to use. Default of 20 produces an
      *     160-bit seed value as recommended by RFC 4226 Section 4 R6.
+     * @param \Rych\Random\Random $random Optional pre-configured instance of
+     *     the random generator class.
      * @return Seed Returns a preconfigured instance of Seed.
      */
-    public static function generate($bytes = 20)
+    public static function generate($bytes = 20, Random $random = null)
     {
-        $bytes = (int) $bytes;
-        $output = self::genRandomBytes($bytes);
+        if (!$random) {
+            $random = new Random;
+        }
+        $output = $random->getRandomBytes((int) $bytes);
 
         return new Seed($output);
-    }
-
-    /**
-     * Generate a random byte string of the requested length.
-     *
-     * @param integer $count The number of bytes to generate.
-     * @return string Returns a string of random bytes.
-     */
-    private static function genRandomBytes($length)
-    {
-        $length = (int) $length;
-        $output = '';
-
-        // Windows platforms
-        if ((PHP_OS & "\xDF\xDF\xDF") === 'WIN') {
-            // Try MCrypt first
-            if (function_exists('mcrypt_create_iv')) {
-                $output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-
-            // On Windows, PHP versions < 5.3.4 have a potential blocking
-            // condition with openssl_random_pseudo_bytes().
-            } else if (function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>=')) {
-                $output = openssl_random_pseudo_bytes($length);
-            }
-        // Non-Windows platforms
-        } else {
-            // Try OpenSSL first
-            if (function_exists('openssl_random_pseudo_bytes')) {
-                $output = openssl_random_pseudo_bytes($length);
-            // Attempt to read straight from /dev/urandom
-            } else if (is_readable('/dev/urandom') && $fp = @fopen('/dev/urandom', 'rb')) {
-                if (function_exists('stream_set_read_buffer')) {
-                    stream_set_read_buffer($fp, 0);
-                }
-                $output = fread($fp, $length);
-                fclose($fp);
-            // Try mcrypt_create_iv() - basically reads from /dev/urandom, but
-            // slower and without being limited by open_basedir.
-            } else if (function_exists('mcrypt_create_iv')) {
-                $output = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-            }
-        }
-
-        // https://github.com/GeorgeArgyros/Secure-random-bytes-in-PHP
-        // We don't read from /dev/urandom here, as we try that above.
-        // If that had worked, we wouldn't be here now.
-        if (strlen($output) != $length) {
-            $output = '';
-            $bitsPerRound = 2; // bits of entropy collected in each clock drift round
-            $msecPerRound = 400; // expected running time of each round in microseconds
-            $hashLength = 20; // SHA-1 Hash length
-            $total = $length; // total bytes of entropy to collect
-
-            do {
-                $bytes = ($total > $hashLength) ? $hashLength : $total;
-                $total -= $bytes;
-
-                $entropy = rand() . uniqid(mt_rand(), true);
-                $entropy .= implode('', @fstat(@fopen(__FILE__, 'r')));
-                $entropy .= memory_get_usage();
-
-                for ($i = 0; $i < 3; ++$i) {
-                    $counter1 = microtime(true);
-                    $var = sha1(mt_rand());
-                    for ($j = 0; $j < 50; ++$j) {
-                        $var = sha1($var);
-                    }
-                    $counter2 = microtime(true);
-                    $entropy .= $counter1 . $counter2;
-                }
-
-                $rounds = (int) ($msecPerRound * 50 / (int) (($counter2 - $counter1) * 1000000));
-                $iterations = $bytes * (int) (ceil(8 / $bitsPerRound));
-
-                for ($i = 0; $i < $iterations; ++$i) {
-                    $counter1 = microtime();
-                    $var = sha1(mt_rand());
-                    for ($j = 0; $j < $rounds; ++$j) {
-                        $var = sha1($var);
-                    }
-                    $counter2 = microtime();
-                    $entropy .= $counter1 . $counter2;
-                }
-
-                $output .= sha1($entropy, true);
-            } while ($length > strlen($output));
-        }
-
-        return substr($output, 0, $length);
     }
 
 }
