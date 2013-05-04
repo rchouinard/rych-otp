@@ -10,8 +10,6 @@
 
 namespace Rych\OTP;
 
-use Rych\OTP\OTP;
-
 /**
  * RFC-4226 HMAC-Based One-Time Passwords
  *
@@ -20,13 +18,8 @@ use Rych\OTP\OTP;
  * @copyright Copyright (c) 2013, Ryan Chouinard
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
-class HOTP extends OTP
+class HOTP extends AbstractOTP
 {
-
-    /**
-     * @var integer
-     */
-    protected $window;
 
     /**
      * @var integer
@@ -34,48 +27,18 @@ class HOTP extends OTP
     protected $lastValidCounterOffset;
 
     /**
-     * Class constructor
+     * Get the counter offset value of the last valid counter value
      *
-     * @param string|\Rych\OTP\Seed $secret The shared secret key as a string or
-     *     an instance of {@link \Rych\OTP\Seed}.
-     * @param array $options An array of configuration options.
-     * @return void
-     */
-    public function __construct($secret, array $options = array ())
-    {
-        $options = array_merge(
-            array (
-                'window' => 4,
-            ),
-            array_change_key_case($options, CASE_LOWER)
-        );
-
-        $this->setWindow($options['window']);
-        parent::__construct($secret, $options);
-    }
-
-    /**
-     * Set the window value
+     * Useful to determine how far ahead the client counter is of the server
+     * value. Returned value will be between 0 and the configured window value.
+     * A return value of null indicates that the last counter verification
+     * failed.
      *
-     * @param integer $window The window value
-     * @return \Rych\OTP\HOTP Returns an instance of self for method chaining.
+     * @return integer Returns the offset of the last valid counter value.
      */
-    public function setWindow($window)
+    public function getLastValidCounterOffset()
     {
-        $window = abs(intval($window));
-        $this->window = $window;
-
-        return $this;
-    }
-
-    /**
-     * Get the window value
-     *
-     * @return integer The window value.
-     */
-    public function getWindow()
-    {
-        return $this->window;
+        return $this->lastValidCounterOffset;
     }
 
     /**
@@ -102,21 +65,6 @@ class HOTP extends OTP
         $this->lastValidCounterOffset = $offset;
 
         return $valid;
-    }
-
-    /**
-     * Get the counter offset value of the last valid counter value
-     *
-     * Useful to determine how far ahead the client counter is of the server
-     * value. Returned value will be between 0 and the configured window value.
-     * A return value of null indicates that the last counter verification
-     * failed.
-     *
-     * @return integer Returns the offset of the last valid counter value.
-     */
-    public function getLastValidCounterOffset()
-    {
-        return $this->lastValidCounterOffset;
     }
 
 }

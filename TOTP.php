@@ -10,8 +10,6 @@
 
 namespace Rych\OTP;
 
-use Rych\OTP\HOTP;
-
 /**
  * RFC-6238 Time-Based One-Time Passwords
  *
@@ -51,30 +49,6 @@ class TOTP extends HOTP
     }
 
     /**
-     * Set the timestep value
-     *
-     * @param integer $timeStep The timestep value.
-     * @return \Rych\OTP\TOTP Returns an instance of self for method chaining.
-     */
-    public function setTimeStep($timeStep)
-    {
-        $timeStep = abs(intval($timeStep));
-        $this->timeStep = $timeStep;
-
-        return $this;
-    }
-
-    /**
-     * Get the timestep value
-     *
-     * @return integer The timestep value.
-     */
-    public function getTimeStep()
-    {
-        return $this->timeStep;
-    }
-
-    /**
      * Generate a one-time password from a given counter value
      *
      * @param integer $counter The counter value. Defaults to current timestamp.
@@ -90,6 +64,30 @@ class TOTP extends HOTP
         $otp = parent::calculate($counter);
 
         return $otp;
+    }
+
+    /**
+     * Get the timestep value
+     *
+     * @return integer The timestep value.
+     */
+    public function getTimeStep()
+    {
+        return $this->timeStep;
+    }
+
+    /**
+     * Set the timestep value
+     *
+     * @param integer $timeStep The timestep value.
+     * @return \Rych\OTP\TOTP Returns an instance of self for method chaining.
+     */
+    public function setTimeStep($timeStep)
+    {
+        $timeStep = abs(intval($timeStep));
+        $this->timeStep = $timeStep;
+
+        return $this;
     }
 
     /**
