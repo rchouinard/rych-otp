@@ -56,26 +56,18 @@ class Seed
     }
 
     /**
-     * Get the seed value in the optionally specified format.
+     * Output the seed value as a string.
      *
-     * @param string $format The output format.
-     * @return string Returns the seed value optionally encoded as $format.
+     * @return string
      */
-    public function getValue($format = null)
+    public function __toString()
     {
-        return $this->encode($this->value, $format);
-    }
+        $value = $this->value;
+        if ($this->encoder instanceof EncoderInterface) {
+            $value = $this->encoder->encode($value);
+        }
 
-    /**
-     * Set the seed value, optionally specifying an input format.
-     *
-     * @param string $value The seed value.
-     * @param string $format The input format.
-     * @return self
-     */
-    public function setValue($value, $format = null)
-    {
-        $this->value = $this->decode($value, $format);
+        return (string) $value;
     }
 
     /**
@@ -127,18 +119,45 @@ class Seed
     }
 
     /**
-     * Output the seed value as a string.
+     * Get the seed value in the optionally specified format.
      *
-     * @return string
+     * @param string $format The output format.
+     * @return string Returns the seed value optionally encoded as $format.
      */
-    public function __toString()
+    public function getValue($format = null)
     {
-        $value = $this->value;
-        if ($this->encoder instanceof EncoderInterface) {
-            $value = $this->encoder->encode($value);
-        }
+        return $this->encode($this->value, $format);
+    }
 
-        return (string) $value;
+    /**
+     * Set the seed value, optionally specifying an input format.
+     *
+     * @param string $value The seed value.
+     * @param string $format The input format.
+     * @return self
+     */
+    public function setValue($value, $format = null)
+    {
+        $this->value = $this->decode($value, $format);
+    }
+
+    /**
+     * Generate a new Seed instance with a new random seed value.
+     *
+     * @param integer $bytes Number of bytes to use. Default of 20 produces an
+     *     160-bit seed value as recommended by RFC 4226 Section 4 R6.
+     * @param \Rych\Random\Random $random Optional pre-configured instance of
+     *     the random generator class.
+     * @return Seed Returns a preconfigured instance of Seed.
+     */
+    public static function generate($bytes = 20, Random $random = null)
+    {
+        if (!$random) {
+            $random = new Random;
+        }
+        $output = $random->getRandomBytes((int) $bytes);
+
+        return new Seed($output);
     }
 
     /**
@@ -193,25 +212,6 @@ class Seed
         $output = $encoder->encode($seed);
 
         return $output;
-    }
-
-    /**
-     * Generate a new Seed instance with a new random seed value.
-     *
-     * @param integer $bytes Number of bytes to use. Default of 20 produces an
-     *     160-bit seed value as recommended by RFC 4226 Section 4 R6.
-     * @param \Rych\Random\Random $random Optional pre-configured instance of
-     *     the random generator class.
-     * @return Seed Returns a preconfigured instance of Seed.
-     */
-    public static function generate($bytes = 20, Random $random = null)
-    {
-        if (!$random) {
-            $random = new Random;
-        }
-        $output = $random->getRandomBytes((int) $bytes);
-
-        return new Seed($output);
     }
 
 }
