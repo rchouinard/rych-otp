@@ -62,14 +62,24 @@ Time-based OTPs are handled the same way, except you don't have a counter value
 to track or increment.
 
 
-Installation
+Installation via [Composer](http://getcomposer.org/)
 ------------
 
-Install using [Composer](http://getcomposer.org/):
-```json
-{
-  "require" {
-    "rych/otp": "1.0.*@dev"
-  }
-}
-```
+ * Install Composer to your project root:
+    ```bash
+    curl -sS https://getcomposer.org/installer | php
+    ```
+
+ * Add a `composer.json` file to your project:
+    ```json
+    {
+      "require" {
+        "rych/otp": "1.0.*@dev"
+      }
+    }
+    ```
+
+ * Run the Composer installer:
+    ```bash
+    php composer.phar install
+    ```
