@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.3.4",
         "ext-hash": "*",
-        "rych/random": "1.0.*@dev"
+        "rych/random": "0.1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
