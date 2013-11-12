@@ -44,8 +44,8 @@ class HOTP extends AbstractOTP
     /**
      * Validate an OTP
      *
-     * @param string $otp The OTP value.
-     * @param integer $counter The counter value. Defaults to 0.
+     * @param  string  $otp     The OTP value.
+     * @param  integer $counter The counter value. Defaults to 0.
      * @return boolean Returns true if the supplied counter value is valid
      *     within the configured counter window, false otherwise.
      */
@@ -68,3 +68,4 @@ class HOTP extends AbstractOTP
     }
 
 }
+

@@ -44,7 +44,7 @@ class Seed
     /**
      * Class constructor.
      *
-     * @param string $value The seed value.
+     * @param  string $value The seed value.
      * @return void
      */
     public function __construct($value = null)
@@ -77,8 +77,7 @@ class Seed
      */
     public function getFormat()
     {
-        switch (true)
-        {
+        switch (true) {
             case ($this->encoder instanceof Base32Encoder):
                 $format = self::FORMAT_BASE32;
                 break;
@@ -97,7 +96,7 @@ class Seed
     /**
      * Set the format setting.
      *
-     * @param string $format The format.
+     * @param  string $format The format.
      * @return self
      */
     public function setFormat($format)
@@ -121,7 +120,7 @@ class Seed
     /**
      * Get the seed value in the optionally specified format.
      *
-     * @param string $format The output format.
+     * @param  string $format The output format.
      * @return string Returns the seed value optionally encoded as $format.
      */
     public function getValue($format = null)
@@ -132,8 +131,8 @@ class Seed
     /**
      * Set the seed value, optionally specifying an input format.
      *
-     * @param string $value The seed value.
-     * @param string $format The input format.
+     * @param  string $value  The seed value.
+     * @param  string $format The input format.
      * @return self
      */
     public function setValue($value, $format = null)
@@ -163,7 +162,7 @@ class Seed
     /**
      * Attempt to decode a seed value with one of the Encoder classes.
      *
-     * @param string $seed The encoded seed value.
+     * @param  string $seed The encoded seed value.
      * @return string Returns the decoded seed value.
      */
     private function decode($seed, $format = null)
@@ -174,14 +173,14 @@ class Seed
         if ($format === null) {
             if (preg_match('/^[0-9a-f]+$/i', $seed)) {
                 $encoder = new HexEncoder;
-            } else if (preg_match('/^[2-7a-z]+$/i', $seed)) {
+            } elseif (preg_match('/^[2-7a-z]+$/i', $seed)) {
                 $encoder = new Base32Encoder;
             }
         // User-specified
         } else {
             if ($format == self::FORMAT_HEX) {
                 $encoder = new HexEncoder;
-            } else if ($format == self::FORMAT_BASE32) {
+            } elseif ($format == self::FORMAT_BASE32) {
                 $encoder = new Base32Encoder;
             }
         }
@@ -194,7 +193,7 @@ class Seed
     /**
      * Attempt to encode a seed value with one of the Encoder classes.
      *
-     * @param string $seed The seed value.
+     * @param  string $seed The seed value.
      * @return string Returns the encoded seed value.
      */
     private function encode($seed, $format = null)
@@ -203,9 +202,9 @@ class Seed
 
         if ($format == self::FORMAT_HEX) {
             $encoder = new HexEncoder;
-        } else if ($format == self::FORMAT_BASE32) {
+        } elseif ($format == self::FORMAT_BASE32) {
             $encoder = new Base32Encoder;
-        } else if ($format == self::FORMAT_RAW) {
+        } elseif ($format == self::FORMAT_RAW) {
             $encoder = new RawEncoder;
         }
 
@@ -215,3 +214,4 @@ class Seed
     }
 
 }
+

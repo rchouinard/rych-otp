@@ -46,9 +46,9 @@ abstract class AbstractOTP
     /**
      * Class constructor
      *
-     * @param string|\Rych\OTP\Seed $secret The shared secret key.
-     * @param array $options An array of options to be used when generating
-     *     one-time passwords.
+     * @param string|\Rych\OTP\Seed $secret  The shared secret key.
+     * @param array                 $options An array of options to be used
+     *     when generating one-time passwords.
      * @return void
      */
     public function __construct($secret, array $options = array ())
@@ -72,8 +72,8 @@ abstract class AbstractOTP
     /**
      * Generate a one-time password from a given counter value
      *
-     * @param integer $counter The counter value. Defaults to 0.
-     * @return string Returns the generated one-time password.
+     * @param  integer $counter The counter value. Defaults to 0.
+     * @return string  Returns the generated one-time password.
      */
     public function calculate($counter = 0)
     {
@@ -105,8 +105,10 @@ abstract class AbstractOTP
     /**
      * Set the number of digits in the one-time password
      *
-     * @param integer $digits The number of digits in a one-time password.
-     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @param  integer                   $digits The number of digits in a
+     *     one-time password.
+     * @return \Rych\OTP\OTP             Returns an instance of self for method
+     *     chaining.
      * @throws \InvalidArgumentException Thrown if the requested number of
      *     digits is outside of the inclusive range 1-10.
      */
@@ -134,8 +136,9 @@ abstract class AbstractOTP
     /**
      * Set the hash function
      *
-     * @param string $hashFunction The hash function.
-     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @param  string                    $hashFunction The hash function.
+     * @return \Rych\OTP\OTP             Returns an instance of self for method
+     *     chaining.
      * @throws \InvalidArgumentException Thrown if the supplied hash function is
      *     not supported.
      */
@@ -164,8 +167,9 @@ abstract class AbstractOTP
     /**
      * Set the shared secret key
      *
-     * @param string|\Rych\OTP\Seed $secret The shared secret key.
-     * @return \Rych\OTP\OTP Returns an instance of self for method chaining.
+     * @param  string|\Rych\OTP\Seed $secret The shared secret key.
+     * @return \Rych\OTP\OTP         Returns an instance of self for method
+     *     chaining.
      */
     public function setSecret($secret)
     {
@@ -190,7 +194,7 @@ abstract class AbstractOTP
     /**
      * Set the window value
      *
-     * @param integer $window The window value
+     * @param  integer        $window The window value
      * @return \Rych\OTP\HOTP Returns an instance of self for method chaining.
      */
     public function setWindow($window)
@@ -206,7 +210,7 @@ abstract class AbstractOTP
      *
      * Uses the method defined in RFC 4226, § 5.4.
      *
-     * @param string $hash Hash value.
+     * @param  string  $hash Hash value.
      * @return integer Truncated hash value.
      */
     private function truncate($hash)
@@ -223,8 +227,8 @@ abstract class AbstractOTP
     /**
      * Convert an integer counter into a string of 8 bytes
      *
-     * @param integer $counter The counter value.
-     * @return string Returns an 8-byte binary string.
+     * @param  integer $counter The counter value.
+     * @return string  Returns an 8-byte binary string.
      */
     private function counterToString($counter)
     {
@@ -238,3 +242,4 @@ abstract class AbstractOTP
     }
 
 }
+
