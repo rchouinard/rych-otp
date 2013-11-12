@@ -74,7 +74,7 @@ Installation via [Composer](http://getcomposer.org/)
     ```json
     {
       "require" {
-        "rych/otp": "1.0.*@dev"
+        "rych/otp": "1.0.*"
       }
     }
     ```
