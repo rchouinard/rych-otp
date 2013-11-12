@@ -1,6 +1,6 @@
 <?php
 /**
- * OATH-OTP Library
+ * Ryan's OATH-OTP Library
  *
  * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
