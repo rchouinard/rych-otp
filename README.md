@@ -49,7 +49,7 @@ $otpCounter = $userObject->getOTPCounter();
 $providedOTP = $requestObject->getPost('otp');
 
 $otplib = new HOTP($otpSeed);
-if ($otplib->verify($providedOTP, $otpCounter)) {
+if ($otplib->validate($providedOTP, $otpCounter)) {
     // Advance the application's stored counter
     // This bit is important for HOTP but not done for TOTP
     $userObject->incrementOTPCounter($otplib->getLastValidCounterOffset() + 1);
