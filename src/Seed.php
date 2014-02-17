@@ -2,9 +2,9 @@
 /**
  * Ryan's OATH-OTP Library
  *
- * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
@@ -17,12 +17,7 @@ use Rych\Random\Encoder\HexEncoder;
 use Rych\Random\Encoder\RawEncoder;
 
 /**
- * OTP Seed/Key
- *
- * @package Rych\OTP
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2014, Ryan Chouinard
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ * One-Time Password Seed/Key
  */
 class Seed
 {
@@ -42,9 +37,10 @@ class Seed
     private $value;
 
     /**
-     * Class constructor.
+     * Class constructor
      *
-     * @param  string $value The seed value.
+     * @param  string  $value Optional; the seed value. If provided, the format
+     *                        will be auto-detected.
      * @return void
      */
     public function __construct($value = null)
@@ -52,28 +48,14 @@ class Seed
         if ($value !== null) {
             $this->setValue($value);
         }
+
         $this->setFormat(self::FORMAT_HEX);
     }
 
     /**
-     * Output the seed value as a string.
+     * Get the output format
      *
-     * @return string
-     */
-    public function __toString()
-    {
-        $value = $this->value;
-        if ($this->encoder instanceof EncoderInterface) {
-            $value = $this->encoder->encode($value);
-        }
-
-        return (string) $value;
-    }
-
-    /**
-     * Get the current format setting.
-     *
-     * @return string Returns the current default format.
+     * @return string  Returns the current output format.
      */
     public function getFormat()
     {
@@ -87,41 +69,40 @@ class Seed
             case ($this->encoder instanceof RawEncoder):
             default:
                 $format = self::FORMAT_RAW;
-                break;
         }
 
         return $format;
     }
 
     /**
-     * Set the format setting.
+     * Set the output format
      *
-     * @param  string $format The format.
-     * @return self
+     * @param  string  $format The new output format.
+     * @return self    Returns an instance of self for method chaining.
      */
     public function setFormat($format)
     {
         switch ($format) {
             case self::FORMAT_BASE32:
-                $this->encoder = new Base32Encoder;
+                $this->encoder = new Base32Encoder();
                 break;
             case self::FORMAT_HEX:
-                $this->encoder = new HexEncoder;
+                $this->encoder = new HexEncoder();
                 break;
             case self::FORMAT_RAW:
             default:
-                $this->encoder = new RawEncoder;
-                break;
+                $this->encoder = new RawEncoder();
         }
 
         return $this;
     }
 
     /**
-     * Get the seed value in the optionally specified format.
+     * Get the seed value, optionally specifying an output format
      *
-     * @param  string $format The output format.
-     * @return string Returns the seed value optionally encoded as $format.
+     * @param  string  $format Optional; output format. If not provided, value
+     *                         is returned in the default format.
+     * @return string  Returns the seed value in the requested format.
      */
     public function getValue($format = null)
     {
@@ -129,11 +110,12 @@ class Seed
     }
 
     /**
-     * Set the seed value, optionally specifying an input format.
+     * Set the seed value, optionally specifying an input format
      *
-     * @param  string $value  The seed value.
-     * @param  string $format The input format.
-     * @return self
+     * @param  string  $value  The seed value.
+     * @param  string  $format Optional; input format. If not provided, format
+     *                         will be auto-detected.
+     * @return self    Returns an instance of self for method chaining.
      */
     public function setValue($value, $format = null)
     {
@@ -141,18 +123,34 @@ class Seed
     }
 
     /**
-     * Generate a new Seed instance with a new random seed value.
+     * Get a string representation of the seed value
      *
-     * @param integer $bytes Number of bytes to use. Default of 20 produces an
-     *     160-bit seed value as recommended by RFC 4226 Section 4 R6.
-     * @param \Rych\Random\Random $random Optional pre-configured instance of
-     *     the random generator class.
-     * @return Seed Returns a preconfigured instance of Seed.
+     * @return string  Returns the seed value in the default format.
+     */
+    public function __toString()
+    {
+        $value = $this->value;
+        if ($this->encoder instanceof EncoderInterface) {
+            $value = $this->encoder->encode($value);
+        }
+
+        return (string) $value;
+    }
+
+    /**
+     * Generate a new \Rych\OTP\Seed instance with a new random seed value
+     *
+     * @param  integer $bytes Optional; number of bytes in seed value.
+     *                        Default of 20 produces a 160-bit seed value as
+     *                        recommended by RFC 4226 Section 4 R6.
+     * @param  \Rych\Random\Random $random Optional; pre-configured instance of
+     *                        the random generator class.
+     * @return \Rych\OTP\Seed Returns a pre-configured instance of Seed.
      */
     public static function generate($bytes = 20, Random $random = null)
     {
         if (!$random) {
-            $random = new Random;
+            $random = new Random();
         }
         $output = $random->getRandomBytes((int) $bytes);
 
@@ -160,28 +158,30 @@ class Seed
     }
 
     /**
-     * Attempt to decode a seed value with one of the Encoder classes.
+     * Attempt to decode a seed value with one of the Encoder classes
      *
-     * @param  string $seed The encoded seed value.
-     * @return string Returns the decoded seed value.
+     * @param  string  $seed   The encoded seed value.
+     * @param  string  $format Optional; format of encoded seed value. If not
+     *                         provided, format will be auto-detected.
+     * @return string  Returns the decoded seed value.
      */
     private function decode($seed, $format = null)
     {
-        $encoder = new RawEncoder;
+        $encoder = new RawEncoder();
 
         // Auto-detect
         if ($format === null) {
             if (preg_match('/^[0-9a-f]+$/i', $seed)) {
-                $encoder = new HexEncoder;
+                $encoder = new HexEncoder();
             } elseif (preg_match('/^[2-7a-z]+$/i', $seed)) {
-                $encoder = new Base32Encoder;
+                $encoder = new Base32Encoder();
             }
         // User-specified
         } else {
             if ($format == self::FORMAT_HEX) {
-                $encoder = new HexEncoder;
+                $encoder = new HexEncoder();
             } elseif ($format == self::FORMAT_BASE32) {
-                $encoder = new Base32Encoder;
+                $encoder = new Base32Encoder();
             }
         }
 
@@ -191,21 +191,23 @@ class Seed
     }
 
     /**
-     * Attempt to encode a seed value with one of the Encoder classes.
+     * Attempt to encode a seed value with one of the Encoder classes
      *
-     * @param  string $seed The seed value.
-     * @return string Returns the encoded seed value.
+     * @param  string  $seed   The seed value.
+     * @param  string  $format Optional; target encode format. If not provided,
+     *                         default format is assumed.
+     * @return string  Returns the encoded seed value.
      */
     private function encode($seed, $format = null)
     {
         $encoder = $this->encoder;
 
         if ($format == self::FORMAT_HEX) {
-            $encoder = new HexEncoder;
+            $encoder = new HexEncoder();
         } elseif ($format == self::FORMAT_BASE32) {
-            $encoder = new Base32Encoder;
+            $encoder = new Base32Encoder();
         } elseif ($format == self::FORMAT_RAW) {
-            $encoder = new RawEncoder;
+            $encoder = new RawEncoder();
         }
 
         $output = $encoder->encode($seed);
@@ -214,4 +216,3 @@ class Seed
     }
 
 }
-

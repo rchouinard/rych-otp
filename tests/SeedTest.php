@@ -1,46 +1,43 @@
 <?php
+/**
+ * Ryan's OATH-OTP Library
+ *
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 
-namespace Rych\OTP\Tests;
+namespace Rych\OTP;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Rych\OTP\Seed;
+use Rych\Random\Random;
+use Rych\Random\Generator\MockGenerator;
 
+/**
+ * One-Time Password Seed/Key Tests
+ */
 class SeedTest extends TestCase
 {
 
     /**
-     * Test that two generated seeds generate different values
+     * Test that the get/set format methods work as expected
      *
      * @test
      * @return void
      */
-    public function testGeneratingSeedGeneratesDifferentValues()
+    public function testGetFormatAndSetFormatMethodsBehaveAsExpected()
     {
-        $seed1 = Seed::generate();
-        $seed2 = Seed::generate();
+        $seed = new Seed();
 
-        $this->assertFalse((string) $seed1 == (string) $seed2, 'Two seed objects instantiated with generate() method appear to have the same seed value.');
-    }
+        $seed->setFormat(Seed::FORMAT_BASE32);
+        $this->assertEquals(Seed::FORMAT_BASE32, $seed->getFormat());
 
-    /**
-     * Test that the Seed constructor is able to detect passed-in seed formats
-     *
-     * @test
-     * @return void
-     */
-    public function testPassingSeedValueToConstructorCorrectlyDetectsValueFormat()
-    {
-        // Hex
-        $seed = new Seed('5345435245544b4559317365637265746b657932');
-        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW), 'Hex seed value passed to constructor failed to decode to expected raw value.');
+        $seed->setFormat(Seed::FORMAT_HEX);
+        $this->assertEquals(Seed::FORMAT_HEX, $seed->getFormat());
 
-        // Base32
-        $seed = new Seed('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS');
-        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW), 'Base32 seed value passed to constructor failed to decode to expected raw value.');
-
-        // Raw
-        $seed = new Seed("\x53\x45\x43\x52\x45\x54\x4b\x45\x59\x31\x73\x65\x63\x72\x65\x74\x6b\x65\x79\x32");
-        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW), 'Raw seed value passed to constructor failed to decode to expected raw value.');
+        $seed->setFormat(Seed::FORMAT_RAW);
+        $this->assertEquals(Seed::FORMAT_RAW, $seed->getFormat());
     }
 
     /**
@@ -51,37 +48,108 @@ class SeedTest extends TestCase
      */
     public function testSetFormatMethodProperlyControlsDefaultOutputFormat()
     {
-        $seed = new Seed('SECRETKEY1secretkey2');
-
-        $seed->setFormat(Seed::FORMAT_HEX);
-        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed, 'Seed object failed to return expected hex value using __toString() method after calling setFormat() method.');
-        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed->getValue(), 'Seed object failed to return expected hex value using getValue() method after calling setFormat() method.');
+        $seed = new Seed();
+        $seed->setValue('SECRETKEY1secretkey2', Seed::FORMAT_RAW);
 
         $seed->setFormat(Seed::FORMAT_BASE32);
-        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed, 'Seed object failed to return expected base32 value using __toString() method after calling setFormat() method.');
-        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed->getValue(), 'Seed object failed to return expected base32 value using getValue() method after calling setFormat() method.');
+        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed);
+        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed->getValue());
+
+        $seed->setFormat(Seed::FORMAT_HEX);
+        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed);
+        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed->getValue());
 
         $seed->setFormat(Seed::FORMAT_RAW);
-        $this->assertEquals('SECRETKEY1secretkey2', $seed, 'Seed object failed to return expected raw value using __toString() method after calling setFormat() method.');
-        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(), 'Seed object failed to return expected raw value using getValue() method after calling setFormat() method.');
+        $this->assertEquals('SECRETKEY1secretkey2', $seed);
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue());
     }
 
     /**
-     * Test that requesting a specific format does not affet global default
+     * Test that the set value method respects the format parameter
      *
      * @test
      * @return void
      */
-    public function testGetValueMethodDoesNotChangeDefaultFormat()
+    public function testSetValueRespectsFormatParameter()
     {
-        $seed = new Seed('SECRETKEY1secretkey2');
-        $seed->setFormat(Seed::FORMAT_HEX);
+        $seed = new Seed();
 
-        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed->getValue(Seed::FORMAT_BASE32), 'Seed object failed to return expected base32 value using getValue() method with format argument.');
-        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW), 'Seed object failed to return expected raw value using getValue() method with format argument.');
+        $seed->setValue('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', Seed::FORMAT_BASE32);
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
 
-        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed, 'Seed object failed to return expected hex value using __toString() method.');
-        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed->getValue(), 'Seed object failed to return expected hex value using getValue() method without format argument.');
+        $seed->setValue('5345435245544b4559317365637265746b657932', Seed::FORMAT_HEX);
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
+
+        $seed->setValue('SECRETKEY1secretkey2', Seed::FORMAT_RAW);
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
+    }
+
+    /**
+     * Test that the get value method respects the format parameter
+     *
+     * @test
+     * @return void
+     */
+    public function testGetValueRespectsFormatParameter()
+    {
+        $seed = new Seed();
+        $seed->setValue('SECRETKEY1secretkey2', Seed::FORMAT_RAW);
+
+        $this->assertEquals('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS', $seed->getValue(Seed::FORMAT_BASE32));
+        $this->assertEquals('5345435245544b4559317365637265746b657932', $seed->getValue(Seed::FORMAT_HEX));
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
+    }
+
+    /**
+     * Test that static generate method returns configured Seed
+     *
+     * @test
+     * @return void
+     */
+    public function testGenerateMethodReturnsValidSeed()
+    {
+        $random = new Random(new MockGenerator());
+        $seed = Seed::generate(8, $random);
+
+        $this->assertInstanceOf('\\Rych\\OTP\\Seed', $seed);
+        $this->assertEquals(str_repeat(chr(0), 8), $seed->getValue(Seed::FORMAT_RAW));
+    }
+
+    /**
+     * Test that static generate method returns random Seed
+     *
+     * @test
+     * @return void
+     */
+    public function testGenerateMethodProducesRandomSeed()
+    {
+        $seed1 = Seed::generate(8);
+        $seed2 = Seed::generate(8);
+
+        // Randomness is near impossible to teset for, so just make sure
+        // two generated instances don't contain the same value
+        $this->assertFalse($seed1->getValue() == $seed2->getValue());
+    }
+
+    /**
+     * Test that the Seed constructor is able to detect passed-in seed formats
+     *
+     * @test
+     * @return void
+     */
+    public function testPassingSeedValueToConstructorCorrectlyDetectsValueFormat()
+    {
+        // Base32
+        $seed = new Seed('KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS');
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
+
+        // Hex
+        $seed = new Seed('5345435245544b4559317365637265746b657932');
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
+
+        // Raw
+        $seed = new Seed("\x53\x45\x43\x52\x45\x54\x4b\x45\x59\x31\x73\x65\x63\x72\x65\x74\x6b\x65\x79\x32");
+        $this->assertEquals('SECRETKEY1secretkey2', $seed->getValue(Seed::FORMAT_RAW));
     }
 
 }
