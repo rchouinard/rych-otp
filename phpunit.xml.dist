@@ -9,6 +9,7 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
+                <directory suffix="Interface.php">./src</directory>
                 <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>

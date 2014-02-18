@@ -2,25 +2,18 @@
 /**
  * Ryan's OATH-OTP Library
  *
- * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
 namespace Rych\OTP;
 
-use Rych\OTP\Seed;
-
 /**
  * One-Time Password Base Class
- *
- * @package Rych\OTP
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2014, Ryan Chouinard
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
-abstract class AbstractOTP
+abstract class AbstractOTP implements OTPInterface
 {
 
     /**
@@ -34,7 +27,7 @@ abstract class AbstractOTP
     protected $hashFunction;
 
     /**
-     * @var \Rych\OTP\Seed
+     * @var Seed
      */
     protected $secret;
 
@@ -44,36 +37,16 @@ abstract class AbstractOTP
     protected $window;
 
     /**
-     * Class constructor
-     *
-     * @param string|\Rych\OTP\Seed $secret  The shared secret key.
-     * @param array                 $options An array of options to be used
-     *     when generating one-time passwords.
-     * @return void
+     * {@inheritdoc}
      */
     public function __construct($secret, array $options = array ())
     {
-        // Option names taken from Google Authenticator docs for consistency
-        $options = array_merge(
-            array (
-                'algorithm' => 'sha1',
-                'digits' => 6,
-                'window' => 4,
-            ),
-            array_change_key_case($options, CASE_LOWER)
-        );
-
-        $this->setDigits($options['digits']);
-        $this->setHashFunction($options['algorithm']);
         $this->setSecret($secret);
-        $this->setWindow($options['window']);
+        $this->processOptions($options);
     }
 
     /**
-     * Generate a one-time password from a given counter value
-     *
-     * @param  integer $counter The counter value. Defaults to 0.
-     * @return string  Returns the generated one-time password.
+     * {@inheritdoc}
      */
     public function calculate($counter = 0)
     {
@@ -81,10 +54,10 @@ abstract class AbstractOTP
         $hashFunction = $this->getHashFunction();
         $secret = $this->getSecret()->getValue(Seed::FORMAT_RAW);
 
-        $counter = $this->counterToString($counter);
+        $counter = self::counterToString($counter);
         $hash = hash_hmac($hashFunction, $counter, $secret, true);
 
-        $otp = $this->truncate($hash);
+        $otp = self::truncateHash($hash);
         if ($digits < 10) {
             $otp %= pow(10, $digits);
         }
@@ -95,7 +68,7 @@ abstract class AbstractOTP
     /**
      * Get the number of digits in the one-time password
      *
-     * @return integer Returns the number of digits in a one-time password.
+     * @return integer Returns the number of digits.
      */
     public function getDigits()
     {
@@ -105,12 +78,10 @@ abstract class AbstractOTP
     /**
      * Set the number of digits in the one-time password
      *
-     * @param  integer                   $digits The number of digits in a
-     *     one-time password.
-     * @return \Rych\OTP\OTP             Returns an instance of self for method
-     *     chaining.
+     * @param  integer $digits The number of digits.
+     * @return self    Returns an instance of self for method chaining.
      * @throws \InvalidArgumentException Thrown if the requested number of
-     *     digits is outside of the inclusive range 1-10.
+     *                 digits is outside of the inclusive range 1-10.
      */
     public function setDigits($digits)
     {
@@ -126,7 +97,7 @@ abstract class AbstractOTP
     /**
      * Get the hash function
      *
-     * @return string Returns the hash function.
+     * @return string  Returns the hash function.
      */
     public function getHashFunction()
     {
@@ -136,11 +107,10 @@ abstract class AbstractOTP
     /**
      * Set the hash function
      *
-     * @param  string                    $hashFunction The hash function.
-     * @return \Rych\OTP\OTP             Returns an instance of self for method
-     *     chaining.
-     * @throws \InvalidArgumentException Thrown if the supplied hash function is
-     *     not supported.
+     * @param  string  $hashFunction The hash function.
+     * @return self    Returns an instance of self for method chaining.
+     * @throws \InvalidArgumentException Thrown if the supplied hash function
+     *                 is not supported.
      */
     public function setHashFunction($hashFunction)
     {
@@ -154,10 +124,9 @@ abstract class AbstractOTP
     }
 
     /**
-     * Get the shared secret key
+     * Get the shared secret
      *
-     * @return \Rych\OTP\Seed Returns a Seed object instance which represents
-     *     the shared secret key.
+     * @return Seed    Returns an encoded {@link Seed} instance.
      */
     public function getSecret()
     {
@@ -165,11 +134,10 @@ abstract class AbstractOTP
     }
 
     /**
-     * Set the shared secret key
+     * Set the shared secret
      *
-     * @param  string|\Rych\OTP\Seed $secret The shared secret key.
-     * @return \Rych\OTP\OTP         Returns an instance of self for method
-     *     chaining.
+     * @param  Seed|string $secret
+     * @return self        Returns an instance of self for method chaining.
      */
     public function setSecret($secret)
     {
@@ -184,7 +152,7 @@ abstract class AbstractOTP
     /**
      * Get the window value
      *
-     * @return integer The window value.
+     * @return integer Returns the window value.
      */
     public function getWindow()
     {
@@ -194,8 +162,8 @@ abstract class AbstractOTP
     /**
      * Set the window value
      *
-     * @param  integer        $window The window value
-     * @return \Rych\OTP\HOTP Returns an instance of self for method chaining.
+     * @param  integer $window The window value.
+     * @return self    Returns an instance of self for method chaining.
      */
     public function setWindow($window)
     {
@@ -206,14 +174,34 @@ abstract class AbstractOTP
     }
 
     /**
+     * @param  array   $options
+     * @return void
+     */
+    private function processOptions(array $options)
+    {
+        // Option names taken from Google Authenticator docs for consistency
+        $options = array_merge(array (
+                'algorithm' => 'sha1',
+                'digits' => 6,
+                'window' => 4,
+            ), array_change_key_case($options, CASE_LOWER)
+        );
+
+        $this->setDigits($options['digits']);
+        $this->setHashFunction($options['algorithm']);
+        $this->setWindow($options['window']);
+    }
+
+    /**
      * Extract 4 bytes from a hash value
      *
      * Uses the method defined in RFC 4226, § 5.4.
      *
+     * @static
      * @param  string  $hash Hash value.
-     * @return integer Truncated hash value.
+     * @return integer Returns the truncated hash value.
      */
-    private function truncate($hash)
+    private static function truncateHash($hash)
     {
         $offset = ord($hash[19]) & 0xf;
         $value  = (ord($hash[$offset + 0]) & 0x7f) << 24;
@@ -227,19 +215,19 @@ abstract class AbstractOTP
     /**
      * Convert an integer counter into a string of 8 bytes
      *
+     * @static
      * @param  integer $counter The counter value.
      * @return string  Returns an 8-byte binary string.
      */
-    private function counterToString($counter)
+    private static function counterToString($counter)
     {
-        $temp = array ();
+        $temp = '';
         while ($counter != 0) {
-            $temp[] = chr($counter & 0xff);
+            $temp .= chr($counter & 0xff);
             $counter >>= 8;
         }
 
-        return str_pad(join(array_reverse($temp)), 8, "\0", STR_PAD_LEFT);
+        return substr(str_pad(strrev($temp), 8, "\0", STR_PAD_LEFT), 0, 8);
     }
 
 }
-

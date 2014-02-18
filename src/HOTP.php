@@ -2,21 +2,16 @@
 /**
  * Ryan's OATH-OTP Library
  *
- * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
 namespace Rych\OTP;
 
 /**
- * RFC-4226 HMAC-Based One-Time Passwords
- *
- * @package Rych\OTP
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2014, Ryan Chouinard
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ * RFC-4226 HMAC-Based One-Time Password Class
  */
 class HOTP extends AbstractOTP
 {
@@ -42,15 +37,11 @@ class HOTP extends AbstractOTP
     }
 
     /**
-     * Validate an OTP
-     *
-     * @param  string  $otp     The OTP value.
-     * @param  integer $counter The counter value. Defaults to 0.
-     * @return boolean Returns true if the supplied counter value is valid
-     *     within the configured counter window, false otherwise.
+     * {@inheritdoc}
      */
     public function validate($otp, $counter = 0)
     {
+        $counter = max(0, $counter);
         $window = $this->getWindow();
 
         $valid = false;
@@ -68,4 +59,3 @@ class HOTP extends AbstractOTP
     }
 
 }
-

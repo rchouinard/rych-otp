@@ -2,21 +2,16 @@
 /**
  * Ryan's OATH-OTP Library
  *
- * @package Rych\OTP
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
 namespace Rych\OTP;
 
 /**
- * RFC-6238 Time-Based One-Time Passwords
- *
- * @package Rych\OTP
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2014, Ryan Chouinard
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ * RFC-6238 Time-Based One-Time Password Class
  */
 class TOTP extends HOTP
 {
@@ -27,21 +22,14 @@ class TOTP extends HOTP
     protected $timeStep;
 
     /**
-     * Class constructor
-     *
-     * @param string|\Rych\OTP\Seed $secret The shared secret key as a string
-     *     or an instance of {@link \Rych\OTP\Seed}.
-     * @param  array $options An array of configuration options.
-     * @return void
+     * {@inheritdoc}
      */
     public function __construct($secret, array $options = array ())
     {
-        $options = array_merge(
-            array (
+        $options = array_merge(array (
                 'window' => 0,
                 'timestep' => 30,
-            ),
-            array_change_key_case($options, CASE_LOWER)
+            ), array_change_key_case($options, CASE_LOWER)
         );
 
         $this->setTimeStep($options['timestep']);
@@ -49,11 +37,7 @@ class TOTP extends HOTP
     }
 
     /**
-     * Generate a one-time password from a given counter value
-     *
-     * @param  integer $counter The counter value. Defaults to current
-     *     timestamp.
-     * @return string  Returns the generated one-time password.
+     * {@inheritdoc}
      */
     public function calculate($counter = null)
     {
@@ -61,7 +45,7 @@ class TOTP extends HOTP
             $counter = time();
         }
 
-        $counter = $this->timestampToCounter($counter);
+        $counter = self::timestampToCounter($counter, $this->getTimeStep());
         $otp = parent::calculate($counter);
 
         return $otp;
@@ -70,7 +54,7 @@ class TOTP extends HOTP
     /**
      * Get the timestep value
      *
-     * @return integer The timestep value.
+     * @return integer Returns the timestep value.
      */
     public function getTimeStep()
     {
@@ -80,8 +64,8 @@ class TOTP extends HOTP
     /**
      * Set the timestep value
      *
-     * @param  integer        $timeStep The timestep value.
-     * @return \Rych\OTP\TOTP Returns an instance of self for method chaining.
+     * @param  integer $timeStep The timestep value.
+     * @return self    Returns an instance of self for method chaining.
      */
     public function setTimeStep($timeStep)
     {
@@ -92,13 +76,7 @@ class TOTP extends HOTP
     }
 
     /**
-     * Validate an OTP
-     *
-     * @param  string  $otp     The OTP value.
-     * @param  integer $counter The counter value. Defaults to current
-     *     timestamp.
-     * @return boolean Returns true if the supplied counter value is valid
-     *     within the configured counter window, false otherwise.
+     * {@inheritdoc}
      */
     public function validate($otp, $counter = null)
     {
@@ -106,7 +84,7 @@ class TOTP extends HOTP
             $counter = time();
         }
         $window = $this->getWindow();
-        $counter = $this->timestampToCounter($counter);
+        $counter = self::timestampToCounter($counter, $this->getTimeStep());
 
         $valid = false;
         $offset = null;
@@ -128,11 +106,11 @@ class TOTP extends HOTP
      * Convert a timestamp into a usable counter value
      *
      * @param  integer $timestamp A UNIX timestamp.
-     * @return integer The calculated counter value.
+     * @param  integer $timeStep  The timestep value.
+     * @return integer Returns the calculated counter value.
      */
-    private function timestampToCounter($timestamp)
+    private static function timestampToCounter($timestamp, $timeStep)
     {
-        $timeStep = $this->getTimeStep();
         $timestamp = abs(intval($timestamp));
         $counter = intval(($timestamp * 1000) / ($timeStep * 1000));
 
@@ -140,4 +118,3 @@ class TOTP extends HOTP
     }
 
 }
-
