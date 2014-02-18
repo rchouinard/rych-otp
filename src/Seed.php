@@ -17,7 +17,7 @@ use Rych\Random\Encoder\HexEncoder;
 use Rych\Random\Encoder\RawEncoder;
 
 /**
- * One-Time Password Seed/Key
+ * One-Time Password Seed/Key Class
  */
 class Seed
 {
@@ -27,7 +27,7 @@ class Seed
     const FORMAT_RAW = 'raw';
 
     /**
-     * @var \Rych\Random\Encoder\EncoderInterface
+     * @var EncoderInterface
      */
     private $encoder;
 
@@ -138,14 +138,14 @@ class Seed
     }
 
     /**
-     * Generate a new \Rych\OTP\Seed instance with a new random seed value
+     * Generate a new {@link Seed} instance with a new random value
      *
-     * @param  integer $bytes Optional; number of bytes in seed value.
-     *                        Default of 20 produces a 160-bit seed value as
-     *                        recommended by RFC 4226 Section 4 R6.
-     * @param  \Rych\Random\Random $random Optional; pre-configured instance of
-     *                        the random generator class.
-     * @return \Rych\OTP\Seed Returns a pre-configured instance of Seed.
+     * @param  integer $bytes  Optional; number of bytes in seed value.
+     *                         Default of 20 produces a 160-bit seed value as
+     *                         recommended by RFC 4226 Section 4 R6.
+     * @param  Random  $random Optional; pre-configured instance of
+     *                         the random generator class.
+     * @return Seed    Returns an instance of Seed with a random value.
      */
     public static function generate($bytes = 20, Random $random = null)
     {
@@ -158,10 +158,10 @@ class Seed
     }
 
     /**
-     * Attempt to decode a seed value with one of the Encoder classes
+     * Attempt to decode a seed value
      *
      * @param  string  $seed   The encoded seed value.
-     * @param  string  $format Optional; format of encoded seed value. If not
+     * @param  string  $format Optional; value encoding format. If not
      *                         provided, format will be auto-detected.
      * @return string  Returns the decoded seed value.
      */
@@ -191,7 +191,7 @@ class Seed
     }
 
     /**
-     * Attempt to encode a seed value with one of the Encoder classes
+     * Attempt to encode a seed value
      *
      * @param  string  $seed   The seed value.
      * @param  string  $format Optional; target encode format. If not provided,
