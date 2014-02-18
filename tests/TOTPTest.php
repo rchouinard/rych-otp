@@ -1,27 +1,34 @@
 <?php
+/**
+ * Ryan's OATH-OTP Library
+ *
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 
-namespace Rych\OTP\Tests;
+namespace Rych\OTP;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Rych\OTP\TOTP;
-use Rych\OTP\Seed;
 
+/**
+ * RFC-6238 Time-Based One-Time Password Tests
+ */
 class TOTPTest extends TestCase
 {
 
     /**
-     * @var Rych\OTP\TOTP
+     * @var Seed
      */
-    private $totp;
+    protected $seed;
 
     /**
-     * Set up test environment
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function setUp()
+    protected function setUp()
     {
-        $this->totp = new TOTP(new Seed('3132333435363738393031323334353637383930'));
+        $this->seed = new Seed('3132333435363738393031323334353637383930');
     }
 
     /**
@@ -43,44 +50,33 @@ class TOTPTest extends TestCase
     }
 
     /**
-     * Test that test vectors are properly calculated
+     * Test that the calculate method produces OTP values expected by RFC 6238
      *
-     * @dataProvider getTestVectors()
      * @test
+     * @dataProvider getTestVectors()
+     * @param  integer $counter
+     * @param  string  $otp
      * @return void
      */
-    public function testTestVectors($counter, $otp)
+    public function testCalculateMethodProducesExpectedValues($counter, $otp)
     {
-        $this->assertEquals($otp, $this->totp->calculate($counter), 'Calculate method failed to produce expected result.');
-        $this->assertTrue($this->totp->validate($otp, $counter), 'Validate method failed to produce expected result.');
+        $totp = new TOTP($this->seed);
+        $this->assertEquals($otp, $totp->calculate($counter));
     }
 
     /**
-     * Test that OTP verification windows work
+     * Test that the validate method validates OTP values expected by RFC 6238
      *
      * @test
+     * @dataProvider getTestVectors()
+     * @param  integer $counter
+     * @param  string  $otp
      * @return void
      */
-    public function testValidateMethodRespondsToWindowParameter()
+    public function testValidateMethodValidatesExpectedValues($counter, $otp)
     {
-        $counter = strtotime('2013-01-01 00:00:00 UTC');
-        $this->totp->setWindow(4);
-
-        // Counter offset = 0
-        $this->assertTrue($this->totp->validate('942875', $counter));
-        $this->assertEquals(0, $this->totp->getLastValidCounterOffset());
-
-        // Counter offset = 2
-        $this->assertTrue($this->totp->validate('260746', $counter));
-        $this->assertEquals(2, $this->totp->getLastValidCounterOffset());
-
-        // Counter offset = 5
-        $this->assertFalse($this->totp->validate('190945', 0));
-        $this->assertNull($this->totp->getLastValidCounterOffset());
-
-        // Invalid OTP
-        $this->assertFalse($this->totp->validate('NOPE', $counter));
-        $this->assertNull($this->totp->getLastValidCounterOffset());
+        $totp = new TOTP($this->seed);
+        $this->assertTrue($totp->validate($otp, $counter));
     }
 
 }

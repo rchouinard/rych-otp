@@ -1,27 +1,34 @@
 <?php
+/**
+ * Ryan's OATH-OTP Library
+ *
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2014, Ryan Chouinard
+ * @link https://github.com/rchouinard/rych-otp
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
+ */
 
-namespace Rych\OTP\Tests;
+namespace Rych\OTP;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Rych\OTP\HOTP;
-use Rych\OTP\Seed;
 
+/**
+ * RFC-4226 HMAC-Based One-Time Password Tests
+ */
 class HOTPTest extends TestCase
 {
 
     /**
-     * @var Rych\OTP\HOTP
+     * @var Seed
      */
-    private $hotp;
+    protected $seed;
 
     /**
-     * Set up test environment
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function setUp()
+    protected function setUp()
     {
-        $this->hotp = new HOTP(new Seed('3132333435363738393031323334353637383930'));
+        $this->seed = new Seed('3132333435363738393031323334353637383930');
     }
 
     /**
@@ -47,43 +54,79 @@ class HOTPTest extends TestCase
     }
 
     /**
-     * Test that test vectors are properly calculated and verified
+     * Test that the calculate method produces OTP values expected by RFC 4226
      *
-     * @dataProvider getTestVectors()
      * @test
+     * @dataProvider getTestVectors()
+     * @param  integer $counter
+     * @param  string  $otp
      * @return void
      */
-    public function testTestVectors($counter, $otp)
+    public function testCalculateMethodProducesExpectedValues($counter, $otp)
     {
-        $this->assertEquals($otp, $this->hotp->calculate($counter), 'Calculate method failed to produce expected result.');
-        $this->assertTrue($this->hotp->validate($otp, $counter), 'Validate method failed to produce expected result.');
+        $hotp = new HOTP($this->seed);
+        $this->assertEquals($otp, $hotp->calculate($counter));
     }
 
     /**
-     * Test that OTP verification windows work
+     * Test that the validate method validates OTP values expected by RFC 4226
+     *
+     * @test
+     * @dataProvider getTestVectors()
+     * @param  integer $counter
+     * @param  string  $otp
+     * @return void
+     */
+    public function testValidateMethodValidatesExpectedValues($counter, $otp)
+    {
+        $hotp = new HOTP($this->seed);
+        $this->assertTrue($hotp->validate($otp, $counter));
+    }
+
+    /**
+     * Test that the validate method validates OTP values inside window
+     *
+     * This test will check that a token which is ahead of the application's
+     * counter can still be validated. This can happen if the user refreshes
+     * the token (requests a new OTP) unnecessarily.
      *
      * @test
      * @return void
      */
-    public function testValidateMethodRespondsToWindowParameter()
+    public function testValidateMethodValidatesValuesInsideWindow()
     {
-        $this->hotp->setWindow(4);
+        // Window of 1, meaning we'll allow the token to be ahead by no
+        // more than one.
+        $hotp = new HOTP($this->seed, array ('window' => 1));
 
-        // Counter offset = 0
-        $this->assertTrue($this->hotp->validate('755224', 0));
-        $this->assertEquals(0, $this->hotp->getLastValidCounterOffset());
+        // Token ahead by one (inside of window)
+        $otp = '359152'; // Token counter value is 2
+        $counter = 1;    // Stored counter value is 1
+        $this->assertTrue($hotp->validate($otp, $counter));
+        $this->assertEquals(1, $hotp->getLastValidCounterOffset());
+    }
 
-        // Counter offset = 2
-        $this->assertTrue($this->hotp->validate('359152', 0));
-        $this->assertEquals(2, $this->hotp->getLastValidCounterOffset());
+    /**
+     * Test that the validate method rejects OTP values outside window
+     *
+     * This test will check that a token which is too far ahead of the
+     * application's counter will be rejected. This can happen if the user
+     * refreshes the token (requests a new OTP) unnecessarily too many times.
+     *
+     * @test
+     * @return void
+     */
+    public function testValidateMethodRejectsValuesOutsideWindow()
+    {
+        // Window of 1, meaning we'll allow the token to be ahead by no
+        // more than one.
+        $hotp = new HOTP($this->seed, array ('window' => 1));
 
-        // Counter offset = 5
-        $this->assertFalse($this->hotp->validate('254676', 0));
-        $this->assertNull($this->hotp->getLastValidCounterOffset());
-
-        // Invalid OTP
-        $this->assertFalse($this->hotp->validate('NOPE', 0));
-        $this->assertNull($this->hotp->getLastValidCounterOffset());
+        // Token ahead by two (outside of window)
+        $otp = '359152'; // Token counter value is 2
+        $counter = 0;    // Stored counter value is 0
+        $this->assertFalse($hotp->validate($otp, $counter));
+        $this->assertNull($hotp->getLastValidCounterOffset());
     }
 
 }
