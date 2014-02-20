@@ -17,24 +17,9 @@ abstract class AbstractOTP implements OTPInterface
 {
 
     /**
-     * @var integer
-     */
-    protected $digits;
-
-    /**
-     * @var string
-     */
-    protected $hashFunction;
-
-    /**
      * @var Seed
      */
     protected $secret;
-
-    /**
-     * @var integer
-     */
-    protected $window;
 
     /**
      * {@inheritdoc}
@@ -46,82 +31,10 @@ abstract class AbstractOTP implements OTPInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  array   $options
+     * @return void
      */
-    public function calculate($counter = 0)
-    {
-        $digits = $this->getDigits();
-        $hashFunction = $this->getHashFunction();
-        $secret = $this->getSecret()->getValue(Seed::FORMAT_RAW);
-
-        $counter = self::counterToString($counter);
-        $hash = hash_hmac($hashFunction, $counter, $secret, true);
-
-        $otp = self::truncateHash($hash);
-        if ($digits < 10) {
-            $otp %= pow(10, $digits);
-        }
-
-        return str_pad($otp, $digits, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * Get the number of digits in the one-time password
-     *
-     * @return integer Returns the number of digits.
-     */
-    public function getDigits()
-    {
-        return $this->digits;
-    }
-
-    /**
-     * Set the number of digits in the one-time password
-     *
-     * @param  integer $digits The number of digits.
-     * @return self    Returns an instance of self for method chaining.
-     * @throws \InvalidArgumentException Thrown if the requested number of
-     *                 digits is outside of the inclusive range 1-10.
-     */
-    public function setDigits($digits)
-    {
-        $digits = abs(intval($digits));
-        if ($digits < 1 || $digits > 10) {
-            throw new \InvalidArgumentException('Digits must be a number between 1 and 10 inclusive');
-        }
-        $this->digits = $digits;
-
-        return $this;
-    }
-
-    /**
-     * Get the hash function
-     *
-     * @return string  Returns the hash function.
-     */
-    public function getHashFunction()
-    {
-        return $this->hashFunction;
-    }
-
-    /**
-     * Set the hash function
-     *
-     * @param  string  $hashFunction The hash function.
-     * @return self    Returns an instance of self for method chaining.
-     * @throws \InvalidArgumentException Thrown if the supplied hash function
-     *                 is not supported.
-     */
-    public function setHashFunction($hashFunction)
-    {
-        $hashFunction = strtolower($hashFunction);
-        if (!in_array($hashFunction, hash_algos())) {
-            throw new \InvalidArgumentException("$hashFunction is not a supported hash function");
-        }
-        $this->hashFunction = $hashFunction;
-
-        return $this;
-    }
+    abstract protected function processOptions(array $options);
 
     /**
      * Get the shared secret
@@ -150,49 +63,6 @@ abstract class AbstractOTP implements OTPInterface
     }
 
     /**
-     * Get the window value
-     *
-     * @return integer Returns the window value.
-     */
-    public function getWindow()
-    {
-        return $this->window;
-    }
-
-    /**
-     * Set the window value
-     *
-     * @param  integer $window The window value.
-     * @return self    Returns an instance of self for method chaining.
-     */
-    public function setWindow($window)
-    {
-        $window = abs(intval($window));
-        $this->window = $window;
-
-        return $this;
-    }
-
-    /**
-     * @param  array   $options
-     * @return void
-     */
-    private function processOptions(array $options)
-    {
-        // Option names taken from Google Authenticator docs for consistency
-        $options = array_merge(array (
-                'algorithm' => 'sha1',
-                'digits' => 6,
-                'window' => 4,
-            ), array_change_key_case($options, CASE_LOWER)
-        );
-
-        $this->setDigits($options['digits']);
-        $this->setHashFunction($options['algorithm']);
-        $this->setWindow($options['window']);
-    }
-
-    /**
      * Extract 4 bytes from a hash value
      *
      * Uses the method defined in RFC 4226, § 5.4.
@@ -201,7 +71,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  string  $hash Hash value.
      * @return integer Returns the truncated hash value.
      */
-    private static function truncateHash($hash)
+    protected static function truncateHash($hash)
     {
         $offset = ord($hash[19]) & 0xf;
         $value  = (ord($hash[$offset + 0]) & 0x7f) << 24;
@@ -219,7 +89,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  integer $counter The counter value.
      * @return string  Returns an 8-byte binary string.
      */
-    private static function counterToString($counter)
+    protected static function counterToString($counter)
     {
         $temp = '';
         while ($counter != 0) {
