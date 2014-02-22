@@ -1,6 +1,10 @@
 OATH-OTP Implementation for PHP
 ===============================
 
+[![Build Status](https://secure.travis-ci.org/rchouinard/rych-otp.png?branch=develop)](https://travis-ci.org/rchouinard/rych-otp)
+[![Coverage Status](https://coveralls.io/repos/rchouinard/rych-otp/badge.png?branch=develop)](https://coveralls.io/r/rchouinard/rych-otp?branch=develop)
+[![Dependency Status](https://www.versioneye.com/php/rych:otp/dev-develop/badge.png)](https://www.versioneye.com/php/rych:otp/dev-develop)
+
 This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
 [RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
