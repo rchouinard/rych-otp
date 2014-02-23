@@ -9,7 +9,6 @@ This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
 [RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
 
-Build status: [![Build Status](https://travis-ci.org/rchouinard/rych-otp.png?branch=master)](https://travis-ci.org/rchouinard/rych-otp)
 
 Quick Start
 -----------
