@@ -2,14 +2,15 @@
 <phpunit colors="true" bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="Rych OATH-OTP Test Suite">
-            <directory suffix="Test.php" phpVersion="5.3.4" phpVersionOperator=">=">./Tests/</directory>
+            <directory suffix="Test.php" phpVersion="5.3.4" phpVersionOperator=">=">./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
             <directory>./</directory>
             <exclude>
-                <directory>./Tests</directory>
+                <directory suffix="Interface.php">./src</directory>
+                <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>
