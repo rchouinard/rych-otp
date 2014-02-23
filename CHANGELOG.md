@@ -1,7 +1,7 @@
 1.1.0
-=====
+-----
 
-Unreleased
+**2014-02-23**
 
 * Library
   * Fixed documentation error in README (@ceejayoz).
@@ -14,8 +14,8 @@ Unreleased
   * Broke tests into smaller units and ensured better coverage.
 
 1.0.0
-=====
+-----
 
-2013-11-12
+**2013-11-12**
 
 * Initial release.
