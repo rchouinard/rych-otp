@@ -91,7 +91,7 @@ class TOTP extends HOTP
         $counterLow = max(0, $counter - intval(floor($window / 2)));
         $counterHigh = max(0, $counter + intval(ceil($window / 2)));
         for ($current = $counterLow; $current <= $counterHigh; ++$current) {
-            if ($otp == parent::calculate($current)) {
+            if ($otp === parent::calculate($current)) {
                 $valid = true;
                 $offset = $current - $counter;
                 break;
