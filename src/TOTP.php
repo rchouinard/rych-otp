@@ -97,7 +97,7 @@ class TOTP extends HOTP
                 break;
             }
         }
-        $this->lastValidCounterOffset = $offset;
+        $this->lastCounterOffset = $offset;
 
         return $valid;
     }
