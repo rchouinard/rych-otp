@@ -67,7 +67,7 @@ class HOTP extends AbstractOTP
         $valid = false;
         $offset = null;
         for ($current = $counter; $current <= $counter + $window; ++$current) {
-            if ($otp == $this->calculate($current)) {
+            if ($otp === $this->calculate($current)) {
                 $valid = true;
                 $offset = $current - $counter;
                 break;

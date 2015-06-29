@@ -76,7 +76,7 @@ Installation via [Composer](http://getcomposer.org/)
  * Add a `composer.json` file to your project:
     ```json
     {
-      "require" {
+      "require": {
         "rych/otp": "1.1.*"
       }
     }
