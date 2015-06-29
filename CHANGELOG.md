@@ -1,21 +1,34 @@
-1.1.0
------
+# Change Log
+All notable changes to this project will be documented in this file.
+This project adheres to [Semantic Versioning](http://semver.org/).
 
-**2014-02-23**
+This file adheres to the format published by [http://keepachangelog.com/](http://keepachangelog.com/).
 
-* Library
-  * Fixed documentation error in README (@ceejayoz).
-  * Moved sources under `src/` and changed to PSR-4 loading.
-  * Cleaned up and standardized source documentation.
-  * Removed specific implementation details from abstract class.
-* Tests
-  * Moved tests under `tests/` and into same namespace as main library.
-  * Added HHVM to Travis-CI build matrix.
-  * Broke tests into smaller units and ensured better coverage.
+## [Unreleased][unreleased]
+### Changed
+ - Improve project documentation
+ - Update development dependencies
+ - Update testing configurations
+### Fixed
+ - Use correct operator for hash comparisons [@Ennosuke]
 
-1.0.0
------
 
-**2013-11-12**
+## [1.1.0] - 2014-02-23
+### Library
+ - Fix documentation error in README [@ceejayoz]
+ - Move sources under `src/` and change to PSR-4 loading
+ - Clean up and standardize source documentation
+ - Remove specific implementation details from abstract class
+### Tests
+ - Move tests under `tests/` and into same namespace as main library
+ - Add HHVM to Travis-CI build matrix
+ - Break tests into smaller units and ensure better coverage
 
-* Initial release.
+
+## [1.0.0] - 2013-11-12
+- Initial release
+
+
+[unreleased]: https://github.com/rchouinard/rych-otp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/rchouinard/rych-otp/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/rchouinard/rych-otp/compare/0b0751...v1.0.0

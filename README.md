@@ -1,27 +1,27 @@
-OATH-OTP Implementation for PHP
-===============================
+# OATH-OTP Implementation for PHP
 
-[![Build Status](https://secure.travis-ci.org/rchouinard/rych-otp.png?branch=v1.1.0)](https://travis-ci.org/rchouinard/rych-otp)
-[![Coverage Status](https://coveralls.io/repos/rchouinard/rych-otp/badge.png?branch=v1.1.0)](https://coveralls.io/r/rchouinard/rych-otp?branch=v1.1.0)
-[![Dependency Status](https://www.versioneye.com/php/rych:otp/1.1.0/badge.png)](https://www.versioneye.com/php/rych:otp/1.1.0)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-coveralls]][link-coveralls]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
 This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
 [RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
 
 
-Quick Start
------------
+## Install
 
-Enabling one-time passwords in an application is fairly easy. A user will
-register and verify their authenticator device with the application, and
-subsequent logins should require the entry of a one-time password displayed on
-the device as well as the usual username and password.
+Via Composer
 
-A shared secret is generated and stored with the application and configured
-on the user's device during the registration phase. All OTP operations will
-then use the same shared secret for that user. A user should only have one
-shared secret, and a shared secret should belong to only one user.
+``` bash
+$ composer require rych/otp
+```
+
+
+## Usage
 
 The library makes generating and sharing secret keys easy.
 
@@ -32,6 +32,9 @@ use Rych\OTP\Seed;
 
 // Generates a 20-byte (160-bit) secret key
 $otpSeed = Seed::generate();
+
+// -OR- use a pre-generated string
+$otpSeed = new Seed('ThisIsMySecretSeed');
 
 // Display secret key details
 printf("Secret (HEX): %s\n", $otpSeed->getValue(Seed::FORMAT_HEX));
@@ -51,6 +54,7 @@ $otpSeed = $userObject->getOTPSeed();
 $otpCounter = $userObject->getOTPCounter();
 $providedOTP = $requestObject->getPost('otp');
 
+// The constructor will accept a Seed object or a string
 $otplib = new HOTP($otpSeed);
 if ($otplib->validate($providedOTP, $otpCounter)) {
     // Advance the application's stored counter
@@ -65,24 +69,39 @@ Time-based OTPs are handled the same way, except you don't have a counter value
 to track or increment.
 
 
-Installation via [Composer](http://getcomposer.org/)
-------------
+## Change log
 
- * Install Composer to your project root:
-    ```bash
-    curl -sS https://getcomposer.org/installer | php
-    ```
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
- * Add a `composer.json` file to your project:
-    ```json
-    {
-      "require": {
-        "rych/otp": "1.1.*"
-      }
-    }
-    ```
 
- * Run the Composer installer:
-    ```bash
-    php composer.phar install
-    ```
+## Testing
+
+``` bash
+$ vendor/bin/phpunit -c phpunit.dist.xml
+```
+
+
+## Security
+
+If you discover any security related issues, please email rchouinard@gmail.com instead of using the issue tracker.
+
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+
+[ico-version]: https://img.shields.io/packagist/v/rych/otp.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/rchouinard/rych-otp.svg?style=flat-square
+[ico-coveralls]: https://img.shields.io/coveralls/rchouinard/rych-otp.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/sensiolabs/i/4441db2d-0872-4fa8-b3f7-6354863b7bdd.svg
+[ico-downloads]: https://img.shields.io/packagist/dt/rych/otp.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/rych/otp
+[link-travis]: https://travis-ci.org/rchouinard/rych-otp
+[link-coveralls]: https://coveralls.io/r/rchouinard/rych-otp
+[link-code-quality]: https://insight.sensiolabs.com/projects/4441db2d-0872-4fa8-b3f7-6354863b7bdd
+[link-downloads]: https://packagist.org/packages/rych/otp
+[link-author]: https://github.com/rchouinard
+[link-contributors]: https://github.com/rchouinard/rych-otp/graphs/contributors
