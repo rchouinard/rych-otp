@@ -18,9 +18,8 @@
         "rych/random": "0.1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "satooshi/php-coveralls": "dev-master",
-        "fabpot/php-cs-fixer": "0.4.*@dev"
+        "phpunit/phpunit": "~4.7",
+        "satooshi/php-coveralls": "~0.6"
     },
     "autoload": {
         "psr-4": {

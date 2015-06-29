@@ -1,5 +1,11 @@
-build/
-nbproject/private/
-vendor/
-composer.lock
-phpunit.xml
+### Composer ###
+/composer.lock
+/composer.phar
+/vendor/
+
+### Testing/Build ###
+/build/
+/phpunit.xml
+
+### NetBeans ###
+/nbproject/private/

@@ -1,15 +1,24 @@
 language: php
+
 php:
   - 5.3
   - 5.4
   - 5.5
+  - 5.6
+  - 7.0
   - hhvm
-before_install:
-  - composer self-update --no-interaction --ansi
+
+matrix:
+  allow_failures:
+    - php: 7.0
+
+before_script:
+  - travis_retry composer self-update
   - composer config notify-on-install false
-install:
-  - composer install --dev --no-progress --no-interaction --ansi --prefer-source
+  - travis_retry composer update --no-interaction --prefer-source
+
 script:
   - vendor/bin/phpunit --configuration phpunit.xml.dist
+
 after_script:
-  - vendor/bin/coveralls --verbose --no-interaction --ansi
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != '7.0' ]]; then vendor/bin/coveralls --verbose; fi
