@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This file adheres to the format published by [http://keepachangelog.com/](http://keepachangelog.com/).
 
-## [Unreleased][unreleased]
+## [1.1.1] - 2015-06-29
 
 ### Changed
  - Improve project documentation
@@ -34,7 +34,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 
 - Initial release
 
-
-[unreleased]: https://github.com/rchouinard/rych-otp/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/rchouinard/rych-otp/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/rchouinard/rych-otp/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/rchouinard/rych-otp/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/rchouinard/rych-otp/compare/0b0751...v1.0.0
