@@ -2,5 +2,6 @@
 /.gitignore         export-ignore
 /.coveralls.yml     export-ignore
 /.travis.yml        export-ignore
+/nbproject          export-ignore
 /phpunit.xml.dist   export-ignore
 /tests              export-ignore

@@ -5,20 +5,25 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This file adheres to the format published by [http://keepachangelog.com/](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
+
 ### Changed
  - Improve project documentation
  - Update development dependencies
  - Update testing configurations
+
 ### Fixed
  - Use correct operator for hash comparisons [@Ennosuke]
+ - Update correct variable when calculating TOTP counter offset [@pavarnos]
 
 
 ## [1.1.0] - 2014-02-23
+
 ### Library
  - Fix documentation error in README [@ceejayoz]
  - Move sources under `src/` and change to PSR-4 loading
  - Clean up and standardize source documentation
  - Remove specific implementation details from abstract class
+
 ### Tests
  - Move tests under `tests/` and into same namespace as main library
  - Add HHVM to Travis-CI build matrix
@@ -26,6 +31,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 
 
 ## [1.0.0] - 2013-11-12
+
 - Initial release
 
 
