@@ -27,7 +27,7 @@ class TOTP extends HOTP
     public function __construct($secret, array $options = array ())
     {
         $options = array_merge(array (
-                'window' => 0,
+                'window' => 1,
                 'timestep' => 30,
             ), array_change_key_case($options, CASE_LOWER)
         );
@@ -88,7 +88,7 @@ class TOTP extends HOTP
 
         $valid = false;
         $offset = null;
-        $counterLow = max(0, $counter - intval(floor($window / 2)));
+        $counterLow = max(0, $counter - intval(ceil($window / 2)));
         $counterHigh = max(0, $counter + intval(ceil($window / 2)));
         for ($current = $counterLow; $current <= $counterHigh; ++$current) {
             if ($otp === parent::calculate($current)) {
