@@ -9,3 +9,6 @@
 
 ### NetBeans ###
 /nbproject/private/
+
+### PhpStorm ###
+/.idea/
