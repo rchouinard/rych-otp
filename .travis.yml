@@ -1,24 +1,26 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
   - hhvm
 
+sudo: false
+
 matrix:
-  allow_failures:
-    - php: 7.0
+  include:
+    - php: 5.5
+      env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
   - travis_retry composer self-update
   - composer config notify-on-install false
-  - travis_retry composer update --no-interaction --prefer-source
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
 
 script:
-  - vendor/bin/phpunit --configuration phpunit.xml.dist
+  - vendor/bin/phpcs --standard=psr2 src/
+  - vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/clover.xml
 
-after_script:
-  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != '7.0' ]]; then vendor/bin/coveralls --verbose; fi
+after_success:
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then travis_retry vendor/bin/coveralls --verbose; fi
