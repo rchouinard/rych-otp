@@ -9,7 +9,7 @@
 
 This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
-[RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
+[RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.5+.
 
 
 ## Install
@@ -23,50 +23,8 @@ $ composer require rych/otp
 
 ## Usage
 
-The library makes generating and sharing secret keys easy.
-
-```php
-<?php
-
-use Rych\OTP\Seed;
-
-// Generates a 20-byte (160-bit) secret key
-$otpSeed = Seed::generate();
-
-// -OR- use a pre-generated string
-$otpSeed = new Seed('ThisIsMySecretSeed');
-
-// Display secret key details
-printf("Secret (HEX): %s\n", $otpSeed->getValue(Seed::FORMAT_HEX));
-printf("Secret (BASE32): %s\n", $otpSeed->getValue(Seed::FORMAT_BASE32));
-```
-
-When a user attempts to login, they should be prompted to provide the OTP
-displayed on their device. The library can then validate the provided OTP
-using the user's shared secret key.
-
-```php
-<?php
-
-use Rych\OTP\HOTP;
-
-$otpSeed = $userObject->getOTPSeed();
-$otpCounter = $userObject->getOTPCounter();
-$providedOTP = $requestObject->getPost('otp');
-
-// The constructor will accept a Seed object or a string
-$otplib = new HOTP($otpSeed);
-if ($otplib->validate($providedOTP, $otpCounter)) {
-    // Advance the application's stored counter
-    // This bit is important for HOTP but not done for TOTP
-    $userObject->incrementOTPCounter($otplib->getLastValidCounterOffset() + 1);
-
-    // Now the user is authenticated
-}
-```
-
-Time-based OTPs are handled the same way, except you don't have a counter value
-to track or increment.
+The library is currently under active development, many things are bound to change. Please see the test suite for
+ussage examples.
 
 
 ## Change log
@@ -77,7 +35,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 ## Testing
 
 ``` bash
-$ vendor/bin/phpunit -c phpunit.dist.xml
+$ composer test
 ```
 
 

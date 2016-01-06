@@ -5,9 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 This file adheres to the format published by [http://keepachangelog.com/](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+ - Complete rewrite starting with solid functional base
 
 ## [1.1.1] - 2015-06-29
-
 ### Changed
  - Improve project documentation
  - Update development dependencies
@@ -19,7 +20,6 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 
 
 ## [1.1.0] - 2014-02-23
-
 ### Library
  - Fix documentation error in README [@ceejayoz]
  - Move sources under `src/` and change to PSR-4 loading
@@ -33,7 +33,6 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 
 
 ## [1.0.0] - 2013-11-12
-
 - Initial release
 
 [unreleased]: https://github.com/rchouinard/rych-otp/compare/v1.1.1...HEAD
