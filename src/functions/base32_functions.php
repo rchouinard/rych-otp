@@ -29,11 +29,11 @@ function base32_encode($data)
 
         $encoded = array_reduce(str_split($bin, 5), function ($encoded, $chunk) {
             $idx = bindec(str_pad($chunk, 5, 0, STR_PAD_RIGHT));
-            return $encoded . BASE32_CHARSET[$idx];
+            return $encoded . substr(BASE32_CHARSET, $idx, 1);
         }, "");
 
         if ((strlen($encoded) % 8) !== 0) {
-            $encoded .= str_repeat(BASE32_CHARSET[32], 8 - (strlen($encoded) % 8));
+            $encoded .= str_repeat(substr(BASE32_CHARSET, 32, 1), 8 - (strlen($encoded) % 8));
         }
     } else {
         $encoded = "";
@@ -54,7 +54,8 @@ function base32_encode($data)
 function base32_decode($data, $strict = false)
 {
     $count = 0;
-    $encoded = preg_replace("/[^".BASE32_CHARSET."]/", "", rtrim(strtoupper($data), BASE32_CHARSET[32]), -1, $count);
+    $data = rtrim(strtoupper($data), substr(BASE32_CHARSET, 32, 1));
+    $encoded = preg_replace("/[^".BASE32_CHARSET."]/", "", $data, -1, $count);
 
     if ($strict == true && $count > 0) {
         return false;
