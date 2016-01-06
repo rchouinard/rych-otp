@@ -25,5 +25,11 @@
         "psr-4": {
             "Rych\\OTP\\": "src/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev",
+            "dev-develop": "2.0-dev"
+        }
     }
 }

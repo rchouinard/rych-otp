@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This file adheres to the format published by [http://keepachangelog.com/](http://keepachangelog.com/).
 
+## [Unreleased]
+
 ## [1.1.1] - 2015-06-29
 
 ### Changed
