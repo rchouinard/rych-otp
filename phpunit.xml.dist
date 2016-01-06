@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
-         backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         verbose="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+        bootstrap="tests/bootstrap.php"
+        strict="true"
+        verbose="true"
+        colors="true"
+>
     <testsuites>
         <testsuite name="Rych OATH-OTP Test Suite">
             <directory suffix="Test.php">tests/</directory>
@@ -17,9 +15,6 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
-            <exclude>
-                <directory suffix="Interface.php">src/</directory>
-            </exclude>
         </whitelist>
     </filter>
     <logging>

@@ -13,18 +13,26 @@
         }
     ],
     "require": {
-        "php": ">=5.3.4",
+        "php": ">=5.5",
         "ext-hash": "*",
-        "rych/random": "0.1.*"
+        "paragonie/random_compat": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.7",
-        "satooshi/php-coveralls": "~0.6"
+        "phpunit/phpunit": "^4.5 || ^5.0",
+        "satooshi/php-coveralls": "~1.0"
     },
     "autoload": {
         "psr-4": {
-            "Rych\\OTP\\": "src/"
-        }
+            "Rych\\Otp\\": "src/"
+        },
+        "files": [
+            "src/functions/utility_functions.php",
+            "src/functions/base32_functions.php",
+            "src/functions/otp_functions.php"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "extra": {
         "branch-alias": {
