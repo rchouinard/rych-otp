@@ -7,8 +7,6 @@
 /build/
 /phpunit.xml
 
-### NetBeans ###
-/nbproject/private/
-
-### PhpStorm ###
+### IDE Directories ###
 /.idea/
+/nbproject/
