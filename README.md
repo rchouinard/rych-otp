@@ -24,7 +24,7 @@ $ composer require rych/otp
 ## Usage
 
 The library is currently under active development, many things are bound to change. Please see the test suite for
-ussage examples.
+usage examples.
 
 
 ## Change log
