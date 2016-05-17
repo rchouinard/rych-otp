@@ -18,7 +18,7 @@ namespace Rych\Otp\Utility;
  */
 function secure_compare($known, $user, $useBuiltin = true)
 {
-    if ($useBuiltin && function_exists("\hash_equals")) {
+    if ($useBuiltin && function_exists("hash_equals")) {
         return \hash_equals($known, $user);
     }
 

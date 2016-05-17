@@ -16,6 +16,8 @@ const TOTP_SHA1   = "sha1";
 const TOTP_SHA256 = "sha256";
 const TOTP_SHA512 = "sha512";
 
+const TOTP_DEFAULT_STEP_SIZE = 30;
+
 /**
  * Generate an HMAC-based one-time password
  *
@@ -76,7 +78,7 @@ function hotp_validate($secret, $counter, $otp, $window = 0)
  * @param   integer $step       Time step parameter.
  * @return  string              The generated OTP or FALSE on error.
  */
-function totp_generate($secret, $now, $digits = 6, $algo = TOTP_SHA1, $step = 30)
+function totp_generate($secret, $now, $digits = 6, $algo = TOTP_SHA1, $step = TOTP_DEFAULT_STEP_SIZE)
 {
     $counter = Utility\timestamp_to_counter($now, $step);
     $hash = hash_hmac($algo, Utility\counter_to_bin($counter), $secret, true);
@@ -94,16 +96,16 @@ function totp_generate($secret, $now, $digits = 6, $algo = TOTP_SHA1, $step = 30
  * @param   string  $secret     The shared secret string.
  * @param   integer $now        A UNIX timestamp indicating the OTP to generate.
  * @param   string  $otp        The OTP to validate.
- * @param   integer $window     How many OTPs after start counter to test.
+ * @param   integer $window     How many OTPs after/before start counter to test.
  * @param   string  $algo       The hash algorithm.
  * @param   integer $step       Time step parameter.
  * @return  integer             Returns the counter offset value starting from
  *                              zero or FALSE on failure.
  */
-function totp_validate($secret, $now, $otp, $window = 0, $algo = TOTP_SHA1, $step = 30)
+function totp_validate($secret, $now, $otp, $window = 0, $algo = TOTP_SHA1, $step = TOTP_DEFAULT_STEP_SIZE)
 {
     $offset = false;
-    for ($current = $now; $current <= $now + ($window * $step); $current += $step) {
+    for ($current = $now - ($window * $step); $current <= $now + ($window * $step); $current += $step) {
         $test = totp_generate($secret, $current, strlen($otp), $algo, $step);
 
         if (Utility\secure_compare($test, $otp)) {
