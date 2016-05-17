@@ -15,7 +15,6 @@ matrix:
 
 before_script:
   - travis_retry composer self-update
-  - composer config notify-on-install false
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
 
 script:
