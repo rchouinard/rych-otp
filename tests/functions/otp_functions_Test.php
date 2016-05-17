@@ -31,7 +31,7 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
 
     /**
      * Provides HOTP test vectors as defined in RFC 4226
-     * 
+     *
      * @return array
      */
     public function hotpVectorProvider()
@@ -54,7 +54,7 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
 
     /**
      * Provides TOTP test vectors as defined in RFC 6238
-     * 
+     *
      * @return array
      */
     public function totpVectorProvider()
@@ -125,7 +125,7 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
         $secret = self::SECRET_SHA1;
         if ($algo === Otp\TOTP_SHA256) {
             $secret = self::SECRET_SHA256;
-        } else if ($algo === Otp\TOTP_SHA512) {
+        } elseif ($algo === Otp\TOTP_SHA512) {
             $secret = self::SECRET_SHA512;
         }
 
@@ -141,7 +141,7 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
         $secret = self::SECRET_SHA1;
         if ($algo === Otp\TOTP_SHA256) {
             $secret = self::SECRET_SHA256;
-        } else if ($algo === Otp\TOTP_SHA512) {
+        } elseif ($algo === Otp\TOTP_SHA512) {
             $secret = self::SECRET_SHA512;
         }
 
