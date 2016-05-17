@@ -14,10 +14,9 @@ use Rych\Otp;
 
 class base32_functions_Test extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Provides base32 test vectors as defined in RFC 4648
-     * 
+     *
      * @return array
      */
     public function base32VectorProvider()
@@ -53,5 +52,4 @@ class base32_functions_Test extends \PHPUnit_Framework_TestCase
         $this->assertSame($decoded, Otp\base32_decode("1" . $encoded, false));
         $this->assertFalse(Otp\base32_decode("1" . $encoded, true));
     }
-
 }

@@ -14,7 +14,6 @@ use Rych\Otp\Utility;
 
 class utility_functions_Test extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @return  array
      */
@@ -61,5 +60,4 @@ class utility_functions_Test extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame($counter, Utility\timestamp_to_counter($timestamp, 30));
     }
-
 }

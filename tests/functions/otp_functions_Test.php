@@ -14,7 +14,6 @@ use Rych\Otp;
 
 class otp_functions_Test extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * A 20-byte secret for SHA1 OTPs
      */
@@ -80,11 +79,11 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
 
         // 64-bit systems only
         if (\PHP_INT_SIZE === 8) {
-            $vectors += [
-                15 => [strtotime("2603-10-11 11:33:20 UTC"), "65353130", Otp\TOTP_SHA1],
-                16 => [strtotime("2603-10-11 11:33:20 UTC"), "77737706", Otp\TOTP_SHA256],
-                17 => [strtotime("2603-10-11 11:33:20 UTC"), "47863826", Otp\TOTP_SHA512],
-            ];
+            array_push($vectors,
+                [strtotime("2603-10-11 11:33:20 UTC"), "65353130", Otp\TOTP_SHA1],
+                [strtotime("2603-10-11 11:33:20 UTC"), "77737706", Otp\TOTP_SHA256],
+                [strtotime("2603-10-11 11:33:20 UTC"), "47863826", Otp\TOTP_SHA512]
+            );
         }
 
         return $vectors;
@@ -148,7 +147,6 @@ class otp_functions_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(0, Otp\totp_validate($secret, $now, $otp, 0, $algo, 30));
         $this->assertSame(1, Otp\totp_validate($secret, $now - 30, $otp, 1, $algo, 30));
-        $this->assertFalse(Otp\totp_validate($secret, $now - 30, $otp , 0, $algo, 30));
+        $this->assertFalse(Otp\totp_validate($secret, $now - 30, $otp, 0, $algo, 30));
     }
-
 }
