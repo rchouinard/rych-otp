@@ -75,32 +75,44 @@ class TOTP extends HOTP
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validate($otp, $counter = null)
-    {
-        if ($counter === null) {
-            $counter = time();
-        }
-        $window = $this->getWindow();
-        $counter = self::timestampToCounter($counter, $this->getTimeStep());
 
-        $valid = false;
-        $offset = null;
-        $counterLow = max(0, $counter - intval(floor($window / 2)));
-        $counterHigh = max(0, $counter + intval(ceil($window / 2)));
-        for ($current = $counterLow; $current <= $counterHigh; ++$current) {
-            if ($otp === parent::calculate($current)) {
-                $valid = true;
-                $offset = $current - $counter;
-                break;
+    /**
+     * @param string $otp the one time password value
+     * @param int    $time     a unix timestamp
+     * @param int    $offset   the value of lastCounterOffset from last time we had a valid password
+     * @return bool true if the $password is valid
+     */
+    public function validate($otp, $time = null, $offset = 0)
+    {
+        if ($time === null) {
+            $time = time();
+        }
+        $counter = $this->timestampToCounter($time, $this->getTimeStep());
+
+        foreach ($this->getPossibleWindow() as $current) {
+            if ($otp === parent::calculate($counter + $current + $offset)) {
+                $this->lastCounterOffset = $current + $offset;
+                return true;
             }
         }
         $this->lastCounterOffset = $offset;
-
-        return $valid;
+        return false;
     }
+
+
+    /**
+     * @return array of potential offsets from the $current counter value to try
+     */
+    protected function getPossibleWindow()
+    {
+        $possible = [ 0 ]; // most likely value is tried first
+        $window   = ceil($this->getWindow() / 2);
+        if ($window > 0) {
+            $possible = array_merge($possible, range(-$window, -1), range(1, $window));
+        }
+        return $possible;
+    }
+
 
     /**
      * Convert a timestamp into a usable counter value
