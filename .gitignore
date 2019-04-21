@@ -6,6 +6,3 @@
 ### Testing/Build ###
 /build/
 /phpunit.xml
-
-### NetBeans ###
-/nbproject/private/
