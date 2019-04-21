@@ -10,7 +10,7 @@
 
 namespace Rych\OTP;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * RFC-4226 HMAC-Based One-Time Password Tests
@@ -26,7 +26,7 @@ class HOTPTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->seed = new Seed('3132333435363738393031323334353637383930');
     }

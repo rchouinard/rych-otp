@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Rych\\Otp\\": "src/"
+            "Rych\\OTP\\": "src/"
         }
     },
     "config": {

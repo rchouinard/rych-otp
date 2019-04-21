@@ -10,7 +10,7 @@
 
 namespace Rych\OTP;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 use Rych\Random\Random;
 use Rych\Random\Generator\MockGenerator;
 
