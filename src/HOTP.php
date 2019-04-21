@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rych\OTP;
 
+use Rych\Otp\Exception\InvalidArgumentException;
+
 /**
  * RFC-4226 HMAC-Based One-Time Password Class
  */
@@ -95,14 +97,14 @@ class HOTP extends AbstractOTP
      *
      * @param  integer $digits The number of digits.
      * @return self    Returns an instance of self for method chaining.
-     * @throws \InvalidArgumentException Thrown if the requested number of
+     * @throws InvalidArgumentException Thrown if the requested number of
      *                 digits is outside of the inclusive range 1-10.
      */
     public function setDigits(int $digits) : self
     {
         $digits = abs(intval($digits));
         if ($digits < 1 || $digits > 10) {
-            throw new \InvalidArgumentException("Digits must be a number between 1 and 10 inclusive");
+            throw new InvalidArgumentException("Digits must be a number between 1 and 10 inclusive");
         }
         $this->digits = $digits;
 
@@ -124,14 +126,14 @@ class HOTP extends AbstractOTP
      *
      * @param  string  $hashFunction The hash function.
      * @return self    Returns an instance of self for method chaining.
-     * @throws \InvalidArgumentException Thrown if the supplied hash function
+     * @throws InvalidArgumentException Thrown if the supplied hash function
      *                 is not supported.
      */
     public function setHashFunction(string $hashFunction) : self
     {
         $hashFunction = strtolower($hashFunction);
         if (!in_array($hashFunction, hash_algos())) {
-            throw new \InvalidArgumentException("$hashFunction is not a supported hash function");
+            throw new InvalidArgumentException("$hashFunction is not a supported hash function");
         }
         $this->hashFunction = $hashFunction;
 

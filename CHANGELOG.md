@@ -10,6 +10,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
  - Update minimum PHP version to >=7.1
  - Remove dependency on Rych\Random
  - Encoders may now throw exceptions when invalid data is passed to decode() method
+ - Re-implement PR #9 - Allow tokens to drift away from real time (@pavarnos)
 
 ## [1.1.1] - 2015-06-29
 
