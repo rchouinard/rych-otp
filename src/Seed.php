@@ -23,9 +23,9 @@ use Rych\OTP\Encoder\RawEncoder;
  */
 class Seed
 {
-    const FORMAT_BASE32 = 'base32';
-    const FORMAT_HEX = 'hex';
-    const FORMAT_RAW = 'raw';
+    const FORMAT_BASE32 = "base32";
+    const FORMAT_HEX = "hex";
+    const FORMAT_RAW = "raw";
 
     /**
      * @var EncoderInterface
@@ -169,9 +169,9 @@ class Seed
 
         // Auto-detect
         if ($format === null) {
-            if (preg_match('/^[0-9a-f]+$/i', $seed)) {
+            if (preg_match("/^[0-9a-f]+$/i", $seed)) {
                 $encoder = new HexEncoder();
-            } elseif (preg_match('/^[2-7a-z]+$/i', $seed)) {
+            } elseif (preg_match("/^[2-7a-z]+$/i", $seed)) {
                 $encoder = new Base32Encoder();
             }
         // User-specified

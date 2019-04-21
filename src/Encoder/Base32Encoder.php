@@ -37,7 +37,7 @@ class Base32Encoder implements EncoderInterface
      */
     public function decode(string $data) : string
     {
-        if (preg_match("/[^".self::CHARSET."]/", $data) > 0 || (strlen($data) % 8) != 0) {
+        if (preg_match("/[^" . self::CHARSET . "]/", $data) > 0 || (strlen($data) % 8) != 0) {
             throw new RuntimeException(sprintf("Provided data is not valid Base32: %s", $data));
         }
 

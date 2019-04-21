@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Ryan's OATH-OTP Library
+ * Ryan"s OATH-OTP Library
  *
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
@@ -29,11 +29,11 @@ class TOTP extends HOTP
     public function __construct(string $secret, array $options = [])
     {
         $options = array_merge([
-            'window' => 0,
-            'timestep' => 30,
+            "window" => 0,
+            "timestep" => 30,
         ], array_change_key_case($options, CASE_LOWER));
 
-        $this->setTimeStep($options['timestep']);
+        $this->setTimeStep($options["timestep"]);
         parent::__construct($secret, $options);
     }
 
@@ -79,7 +79,7 @@ class TOTP extends HOTP
     /**
      * {@inheritdoc}
      */
-    public function validate(string $otp, int $counter = null) : bool
+    public function validate(string $otp, int $counter = null, int $driftOffset = 0) : bool
     {
         if ($counter === null) {
             $counter = time();

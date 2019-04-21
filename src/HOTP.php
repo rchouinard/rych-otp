@@ -55,7 +55,7 @@ class HOTP extends AbstractOTP
             $otp %= pow(10, $digits);
         }
 
-        return str_pad((string) $otp, $digits, '0', STR_PAD_LEFT);
+        return str_pad((string) $otp, $digits, "0", STR_PAD_LEFT);
     }
 
     /**
@@ -102,7 +102,7 @@ class HOTP extends AbstractOTP
     {
         $digits = abs(intval($digits));
         if ($digits < 1 || $digits > 10) {
-            throw new \InvalidArgumentException('Digits must be a number between 1 and 10 inclusive');
+            throw new \InvalidArgumentException("Digits must be a number between 1 and 10 inclusive");
         }
         $this->digits = $digits;
 
@@ -184,13 +184,13 @@ class HOTP extends AbstractOTP
     {
         // Option names taken from Google Authenticator docs for consistency
         $options = array_merge([
-            'algorithm' => 'sha1',
-            'digits' => 6,
-            'window' => 4,
+            "algorithm" => "sha1",
+            "digits" => 6,
+            "window" => 4,
         ], array_change_key_case($options, CASE_LOWER));
 
-        $this->setDigits($options['digits']);
-        $this->setHashFunction($options['algorithm']);
-        $this->setWindow($options['window']);
+        $this->setDigits($options["digits"]);
+        $this->setHashFunction($options["algorithm"]);
+        $this->setWindow($options["window"]);
     }
 }

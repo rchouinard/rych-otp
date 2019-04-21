@@ -93,7 +93,7 @@ abstract class AbstractOTP implements OTPInterface
      */
     protected static function counterToString(int $counter) : string
     {
-        $temp = '';
+        $temp = "";
         while ($counter != 0) {
             $temp .= chr($counter & 0xff);
             $counter >>= 8;

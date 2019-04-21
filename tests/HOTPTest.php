@@ -1,6 +1,6 @@
 <?php
 /**
- * Ryan"s OATH-OTP Library
+ * Ryan's OATH-OTP Library
  *
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
