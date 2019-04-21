@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Ryan's OATH-OTP Library
  *
@@ -42,7 +45,7 @@ class Seed
      *                        will be auto-detected.
      * @return void
      */
-    public function __construct($value = null)
+    public function __construct(string $value = null)
     {
         if ($value !== null) {
             $this->setValue($value);
@@ -56,7 +59,7 @@ class Seed
      *
      * @return string  Returns the current output format.
      */
-    public function getFormat()
+    public function getFormat() : string
     {
         switch (true) {
             case ($this->encoder instanceof Base32Encoder):
@@ -79,7 +82,7 @@ class Seed
      * @param  string  $format The new output format.
      * @return self    Returns an instance of self for method chaining.
      */
-    public function setFormat($format)
+    public function setFormat(string $format) : self
     {
         switch ($format) {
             case self::FORMAT_BASE32:
@@ -103,7 +106,7 @@ class Seed
      *                         is returned in the default format.
      * @return string  Returns the seed value in the requested format.
      */
-    public function getValue($format = null)
+    public function getValue(string $format = null) : string
     {
         return $this->encode($this->value, $format);
     }
@@ -116,9 +119,11 @@ class Seed
      *                         will be auto-detected.
      * @return self    Returns an instance of self for method chaining.
      */
-    public function setValue($value, $format = null)
+    public function setValue(string $value, string $format = null) : self
     {
         $this->value = $this->decode($value, $format);
+
+        return $this;
     }
 
     /**
@@ -126,7 +131,7 @@ class Seed
      *
      * @return string  Returns the seed value in the default format.
      */
-    public function __toString()
+    public function __toString() : string
     {
         $value = $this->value;
         if ($this->encoder instanceof EncoderInterface) {
@@ -146,7 +151,7 @@ class Seed
      *                         the random generator class.
      * @return Seed    Returns an instance of Seed with a random value.
      */
-    public static function generate($bytes = 20, Random $random = null)
+    public static function generate(int $bytes = 20, Random $random = null) : self
     {
         if (!$random) {
             $random = new Random();
@@ -164,7 +169,7 @@ class Seed
      *                         provided, format will be auto-detected.
      * @return string  Returns the decoded seed value.
      */
-    private function decode($seed, $format = null)
+    private function decode(string $seed, string $format = null) : string
     {
         $encoder = new RawEncoder();
 
@@ -197,7 +202,7 @@ class Seed
      *                         default format is assumed.
      * @return string  Returns the encoded seed value.
      */
-    private function encode($seed, $format = null)
+    private function encode(string $seed, string $format = null) : string
     {
         $encoder = $this->encoder;
 

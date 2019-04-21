@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Ryan's OATH-OTP Library
  *
@@ -38,7 +41,7 @@ class HOTP extends AbstractOTP
     /**
      * {@inheritdoc}
      */
-    public function calculate($counter = 0)
+    public function calculate(int $counter = 0) : string
     {
         $digits = $this->getDigits();
         $hashFunction = $this->getHashFunction();
@@ -52,13 +55,13 @@ class HOTP extends AbstractOTP
             $otp %= pow(10, $digits);
         }
 
-        return str_pad($otp, $digits, '0', STR_PAD_LEFT);
+        return str_pad((string) $otp, $digits, '0', STR_PAD_LEFT);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validate($otp, $counter = 0)
+    public function validate(string $otp, int $counter = 0) : bool
     {
         $counter = max(0, $counter);
         $window = $this->getWindow();
@@ -82,7 +85,7 @@ class HOTP extends AbstractOTP
      *
      * @return integer Returns the number of digits.
      */
-    public function getDigits()
+    public function getDigits() : int
     {
         return $this->digits;
     }
@@ -95,7 +98,7 @@ class HOTP extends AbstractOTP
      * @throws \InvalidArgumentException Thrown if the requested number of
      *                 digits is outside of the inclusive range 1-10.
      */
-    public function setDigits($digits)
+    public function setDigits(int $digits) : self
     {
         $digits = abs(intval($digits));
         if ($digits < 1 || $digits > 10) {
@@ -111,7 +114,7 @@ class HOTP extends AbstractOTP
      *
      * @return string  Returns the hash function.
      */
-    public function getHashFunction()
+    public function getHashFunction() : string
     {
         return $this->hashFunction;
     }
@@ -124,7 +127,7 @@ class HOTP extends AbstractOTP
      * @throws \InvalidArgumentException Thrown if the supplied hash function
      *                 is not supported.
      */
-    public function setHashFunction($hashFunction)
+    public function setHashFunction(string $hashFunction) : self
     {
         $hashFunction = strtolower($hashFunction);
         if (!in_array($hashFunction, hash_algos())) {
@@ -145,7 +148,7 @@ class HOTP extends AbstractOTP
      *
      * @return integer|null Returns the offset of the last valid counter value.
      */
-    public function getLastValidCounterOffset()
+    public function getLastValidCounterOffset() : ?int
     {
         return $this->lastCounterOffset;
     }
@@ -155,7 +158,7 @@ class HOTP extends AbstractOTP
      *
      * @return integer Returns the window value.
      */
-    public function getWindow()
+    public function getWindow() : int
     {
         return $this->window;
     }
@@ -166,7 +169,7 @@ class HOTP extends AbstractOTP
      * @param  integer $window The window value.
      * @return self    Returns an instance of self for method chaining.
      */
-    public function setWindow($window)
+    public function setWindow(int $window) : self
     {
         $window = abs(intval($window));
         $this->window = $window;
@@ -177,7 +180,7 @@ class HOTP extends AbstractOTP
     /**
      * {@inheritdoc}
      */
-    protected function processOptions(array $options)
+    protected function processOptions(array $options) : void
     {
         // Option names taken from Google Authenticator docs for consistency
         $options = array_merge(array (

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Ryan's OATH-OTP Library
  *
@@ -23,7 +26,7 @@ abstract class AbstractOTP implements OTPInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct($secret, array $options = array ())
+    public function __construct(string $secret, array $options = array ())
     {
         $this->setSecret($secret);
         $this->processOptions($options);
@@ -33,14 +36,14 @@ abstract class AbstractOTP implements OTPInterface
      * @param  array   $options
      * @return void
      */
-    abstract protected function processOptions(array $options);
+    abstract protected function processOptions(array $options) : void;
 
     /**
      * Get the shared secret
      *
      * @return Seed    Returns an encoded {@link Seed} instance.
      */
-    public function getSecret()
+    public function getSecret() : Seed
     {
         return $this->secret;
     }
@@ -51,7 +54,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  Seed|string $secret
      * @return self        Returns an instance of self for method chaining.
      */
-    public function setSecret($secret)
+    public function setSecret(string $secret) : self
     {
         if (!$secret instanceof Seed) {
             $secret = new Seed($secret);
@@ -70,7 +73,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  string  $hash Hash value.
      * @return integer Returns the truncated hash value.
      */
-    protected static function truncateHash($hash)
+    protected static function truncateHash(string $hash) : int
     {
         $offset = ord($hash[19]) & 0xf;
         $value  = (ord($hash[$offset + 0]) & 0x7f) << 24;
@@ -88,7 +91,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  integer $counter The counter value.
      * @return string  Returns an 8-byte binary string.
      */
-    protected static function counterToString($counter)
+    protected static function counterToString(int $counter) : string
     {
         $temp = '';
         while ($counter != 0) {

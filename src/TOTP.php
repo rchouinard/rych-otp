@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Ryan's OATH-OTP Library
  *
@@ -23,7 +26,7 @@ class TOTP extends HOTP
     /**
      * {@inheritdoc}
      */
-    public function __construct($secret, array $options = array ())
+    public function __construct(string $secret, array $options = array ())
     {
         $options = array_merge(array (
                 'window' => 0,
@@ -38,7 +41,7 @@ class TOTP extends HOTP
     /**
      * {@inheritdoc}
      */
-    public function calculate($counter = null)
+    public function calculate(int $counter = null) : string
     {
         if ($counter === null) {
             $counter = time();
@@ -66,7 +69,7 @@ class TOTP extends HOTP
      * @param  integer $timeStep The timestep value.
      * @return self    Returns an instance of self for method chaining.
      */
-    public function setTimeStep($timeStep)
+    public function setTimeStep(int $timeStep) : self
     {
         $timeStep = abs(intval($timeStep));
         $this->timeStep = $timeStep;
@@ -77,7 +80,7 @@ class TOTP extends HOTP
     /**
      * {@inheritdoc}
      */
-    public function validate($otp, $counter = null)
+    public function validate(string $otp, int $counter = null) : bool
     {
         if ($counter === null) {
             $counter = time();
@@ -108,7 +111,7 @@ class TOTP extends HOTP
      * @param  integer $timeStep  The timestep value.
      * @return integer Returns the calculated counter value.
      */
-    private static function timestampToCounter($timestamp, $timeStep)
+    private static function timestampToCounter(int $timestamp, int $timeStep) : int
     {
         $timestamp = abs(intval($timestamp));
         $counter = intval(($timestamp * 1000) / ($timeStep * 1000));
