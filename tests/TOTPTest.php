@@ -18,7 +18,6 @@ use Rych\OTP\TOTP;
  */
 class TOTPTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var Seed
      */
@@ -79,5 +78,4 @@ class TOTPTest extends \PHPUnit\Framework\TestCase
         $totp = new TOTP($this->seed);
         $this->assertTrue($totp->validate($otp, $counter));
     }
-
 }

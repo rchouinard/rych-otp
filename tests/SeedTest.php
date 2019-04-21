@@ -17,7 +17,6 @@ use Rych\OTP\Seed;
  */
 class SeedTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * Test that the get/set format methods work as expected
      *
@@ -148,5 +147,4 @@ class SeedTest extends \PHPUnit\Framework\TestCase
         $seed = new Seed("\x53\x45\x43\x52\x45\x54\x4b\x45\x59\x31\x73\x65\x63\x72\x65\x74\x6b\x65\x79\x32");
         $this->assertEquals("SECRETKEY1secretkey2", $seed->getValue(Seed::FORMAT_RAW));
     }
-
 }

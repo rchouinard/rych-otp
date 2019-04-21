@@ -18,7 +18,6 @@ use Rych\OTP\Seed;
  */
 class HOTPTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var Seed
      */
@@ -129,5 +128,4 @@ class HOTPTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($hotp->validate($otp, $counter));
         $this->assertNull($hotp->getLastValidCounterOffset());
     }
-
 }
