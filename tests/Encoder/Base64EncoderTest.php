@@ -15,26 +15,26 @@ class Base64EncoderTest extends \PHPUnit\Framework\TestCase
 
     public function vectorProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ('', ''),
-            array ('Zg==', 'f'),
-            array ('Zm8=', 'fo'),
-            array ('Zm9v', 'foo'),
-            array ('Zm9vYg==', 'foob'),
-            array ('Zm9vYmE=', 'fooba'),
-            array ('Zm9vYmFy', 'foobar'),
-        );
+            ["", ""],
+            ["Zg==", "f"],
+            ["Zm8=", "fo"],
+            ["Zm9v", "foo"],
+            ["Zm9vYg==", "foob"],
+            ["Zm9vYmE=", "fooba"],
+            ["Zm9vYmFy", "foobar"],
+        ];
     }
 
     public function invalidDataProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ("ABC"), // not multiple of 4 (1)
-            array ("ABCDEF"), // not multiple of 4 (2)
-            array ("1nV@liD!"), // invalid characters
-        );
+            ["ABC"], // not multiple of 4 (1)
+            ["ABCDEF"], // not multiple of 4 (2)
+            ["1nV@liD!"], // invalid characters
+        ];
     }
 
     /**

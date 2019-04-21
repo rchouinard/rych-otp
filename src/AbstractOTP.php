@@ -26,7 +26,7 @@ abstract class AbstractOTP implements OTPInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $secret, array $options = array ())
+    public function __construct(string $secret, array $options = [])
     {
         $this->setSecret($secret);
         $this->processOptions($options);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ryan's OATH-OTP Library
+ * Ryan"s OATH-OTP Library
  *
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
@@ -28,7 +28,7 @@ class HOTPTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->seed = new Seed('3132333435363738393031323334353637383930');
+        $this->seed = new Seed("3132333435363738393031323334353637383930");
     }
 
     /**
@@ -38,19 +38,19 @@ class HOTPTest extends TestCase
      */
     public function getTestVectors()
     {
-        return array (
+        return [
             // Adapted from RFC 4226
-            array (0, '755224'),
-            array (1, '287082'),
-            array (2, '359152'),
-            array (3, '969429'),
-            array (4, '338314'),
-            array (5, '254676'),
-            array (6, '287922'),
-            array (7, '162583'),
-            array (8, '399871'),
-            array (9, '520489'),
-        );
+            [0, "755224"],
+            [1, "287082"],
+            [2, "359152"],
+            [3, "969429"],
+            [4, "338314"],
+            [5, "254676"],
+            [6, "287922"],
+            [7, "162583"],
+            [8, "399871"],
+            [9, "520489"],
+        ];
     }
 
     /**
@@ -86,7 +86,7 @@ class HOTPTest extends TestCase
     /**
      * Test that the validate method validates OTP values inside window
      *
-     * This test will check that a token which is ahead of the application's
+     * This test will check that a token which is ahead of the application"s
      * counter can still be validated. This can happen if the user refreshes
      * the token (requests a new OTP) unnecessarily.
      *
@@ -95,12 +95,12 @@ class HOTPTest extends TestCase
      */
     public function testValidateMethodValidatesValuesInsideWindow()
     {
-        // Window of 1, meaning we'll allow the token to be ahead by no
+        // Window of 1, meaning we"ll allow the token to be ahead by no
         // more than one.
-        $hotp = new HOTP($this->seed, array ('window' => 1));
+        $hotp = new HOTP($this->seed, ["window" => 1]);
 
         // Token ahead by one (inside of window)
-        $otp = '359152'; // Token counter value is 2
+        $otp = "359152"; // Token counter value is 2
         $counter = 1;    // Stored counter value is 1
         $this->assertTrue($hotp->validate($otp, $counter));
         $this->assertEquals(1, $hotp->getLastValidCounterOffset());
@@ -110,7 +110,7 @@ class HOTPTest extends TestCase
      * Test that the validate method rejects OTP values outside window
      *
      * This test will check that a token which is too far ahead of the
-     * application's counter will be rejected. This can happen if the user
+     * application"s counter will be rejected. This can happen if the user
      * refreshes the token (requests a new OTP) unnecessarily too many times.
      *
      * @test
@@ -118,12 +118,12 @@ class HOTPTest extends TestCase
      */
     public function testValidateMethodRejectsValuesOutsideWindow()
     {
-        // Window of 1, meaning we'll allow the token to be ahead by no
+        // Window of 1, meaning we"ll allow the token to be ahead by no
         // more than one.
-        $hotp = new HOTP($this->seed, array ('window' => 1));
+        $hotp = new HOTP($this->seed, ["window" => 1]);
 
         // Token ahead by two (outside of window)
-        $otp = '359152'; // Token counter value is 2
+        $otp = "359152"; // Token counter value is 2
         $counter = 0;    // Stored counter value is 0
         $this->assertFalse($hotp->validate($otp, $counter));
         $this->assertNull($hotp->getLastValidCounterOffset());

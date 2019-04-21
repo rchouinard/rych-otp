@@ -15,26 +15,26 @@ class HexEncoderTest extends \PHPUnit\Framework\TestCase
 
     public function vectorProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ('', ''),
-            array ('66', 'f'),
-            array ('666f', 'fo'),
-            array ('666f6f', 'foo'),
-            array ('666f6f62', 'foob'),
-            array ('666f6f6261', 'fooba'),
-            array ('666f6f626172', 'foobar'),
-        );
+            ["", ""],
+            ["66", "f"],
+            ["666f", "fo"],
+            ["666f6f", "foo"],
+            ["666f6f62", "foob"],
+            ["666f6f6261", "fooba"],
+            ["666f6f626172", "foobar"],
+        ];
     }
 
     public function invalidDataProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ("A"), // not multiple of 2 (1)
-            array ("ABC"), // not multiple of 2 (2)
-            array ("1nV@liD!"), // invalid characters
-        );
+            ["A"], // not multiple of 2 (1)
+            ["ABC"], // not multiple of 2 (2)
+            ["1nV@liD!"], // invalid characters
+        ];
     }
 
     /**

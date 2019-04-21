@@ -13,16 +13,16 @@ class RawEncoderTest extends \PHPUnit\Framework\TestCase
 
     public function vectorProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ('', ''),
-            array ('f', 'f'),
-            array ('fo', 'fo'),
-            array ('foo', 'foo'),
-            array ('foob', 'foob'),
-            array ('fooba', 'fooba'),
-            array ('foobar', 'foobar'),
-        );
+            ["", ""],
+            ["f", "f"],
+            ["fo", "fo"],
+            ["foo", "foo"],
+            ["foob", "foob"],
+            ["fooba", "fooba"],
+            ["foobar", "foobar"],
+        ];
     }
 
     /**

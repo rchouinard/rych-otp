@@ -15,26 +15,26 @@ class Base32EncoderTest extends \PHPUnit\Framework\TestCase
 
     public function vectorProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ('', ''),
-            array ('MY======', 'f'),
-            array ('MZXQ====', 'fo'),
-            array ('MZXW6===', 'foo'),
-            array ('MZXW6YQ=', 'foob'),
-            array ('MZXW6YTB', 'fooba'),
-            array ('MZXW6YTBOI======', 'foobar'),
-        );
+            ["", ""],
+            ["MY======", "f"],
+            ["MZXQ====", "fo"],
+            ["MZXW6===", "foo"],
+            ["MZXW6YQ=", "foob"],
+            ["MZXW6YTB", "fooba"],
+            ["MZXW6YTBOI======", "foobar"],
+        ];
     }
 
     public function invalidDataProvider() : array
     {
-        return array (
+        return [
             // Encoded, Decoded
-            array ("ABCDEFG"), // not multiple of 8 (1)
-            array ("ABCDEFGHIJKL"), // not multiple of 8 (2)
-            array ("1nV@liD!"), // invalid characters
-        );
+            ["ABCDEFG"], // not multiple of 8 (1)
+            ["ABCDEFGHIJKL"], // not multiple of 8 (2)
+            ["1nV@liD!"], // invalid characters
+        ];
     }
 
     /**

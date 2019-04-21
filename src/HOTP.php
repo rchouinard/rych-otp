@@ -183,11 +183,11 @@ class HOTP extends AbstractOTP
     protected function processOptions(array $options) : void
     {
         // Option names taken from Google Authenticator docs for consistency
-        $options = array_merge(array (
+        $options = array_merge([
             'algorithm' => 'sha1',
             'digits' => 6,
             'window' => 4,
-        ), array_change_key_case($options, CASE_LOWER));
+        ], array_change_key_case($options, CASE_LOWER));
 
         $this->setDigits($options['digits']);
         $this->setHashFunction($options['algorithm']);

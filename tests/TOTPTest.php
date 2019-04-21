@@ -1,6 +1,6 @@
 <?php
 /**
- * Ryan's OATH-OTP Library
+ * Ryan"s OATH-OTP Library
  *
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2014, Ryan Chouinard
@@ -28,7 +28,7 @@ class TOTPTest extends TestCase
      */
     protected function setUp() : void
     {
-        $this->seed = new Seed('3132333435363738393031323334353637383930');
+        $this->seed = new Seed("3132333435363738393031323334353637383930");
     }
 
     /**
@@ -38,15 +38,15 @@ class TOTPTest extends TestCase
      */
     public function getTestVectors()
     {
-        return array (
+        return [
             // Adapted from RFC 6238
-            array (strtotime('1970-01-01 00:00:59 UTC'), '287082'),
-            array (strtotime('2005-03-18 01:58:29 UTC'), '081804'),
-            array (strtotime('2005-03-18 01:58:31 UTC'), '050471'),
-            array (strtotime('2009-02-13 23:31:30 UTC'), '005924'),
-            array (strtotime('2033-05-18 03:33:20 UTC'), '279037'),
-            //array (strtotime('2603-10-11 11:33:20 UTC'), '353130'),
-        );
+            [strtotime("1970-01-01 00:00:59 UTC"), "287082"],
+            [strtotime("2005-03-18 01:58:29 UTC"), "081804"],
+            [strtotime("2005-03-18 01:58:31 UTC"), "050471"],
+            [strtotime("2009-02-13 23:31:30 UTC"), "005924"],
+            [strtotime("2033-05-18 03:33:20 UTC"), "279037"],
+            //[strtotime("2603-10-11 11:33:20 UTC"), "353130"],
+        ];
     }
 
     /**

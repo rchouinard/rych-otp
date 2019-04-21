@@ -26,12 +26,12 @@ class TOTP extends HOTP
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $secret, array $options = array ())
+    public function __construct(string $secret, array $options = [])
     {
-        $options = array_merge(array (
+        $options = array_merge([
             'window' => 0,
             'timestep' => 30,
-        ), array_change_key_case($options, CASE_LOWER));
+        ], array_change_key_case($options, CASE_LOWER));
 
         $this->setTimeStep($options['timestep']);
         parent::__construct($secret, $options);
