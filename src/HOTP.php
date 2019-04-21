@@ -15,7 +15,6 @@ namespace Rych\OTP;
  */
 class HOTP extends AbstractOTP
 {
-
     /**
      * @var integer
      */
@@ -192,5 +191,4 @@ class HOTP extends AbstractOTP
         $this->setHashFunction($options['algorithm']);
         $this->setWindow($options['window']);
     }
-
 }

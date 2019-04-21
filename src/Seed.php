@@ -21,7 +21,6 @@ use Rych\Random\Encoder\RawEncoder;
  */
 class Seed
 {
-
     const FORMAT_BASE32 = 'base32';
     const FORMAT_HEX = 'hex';
     const FORMAT_RAW = 'raw';
@@ -214,5 +213,4 @@ class Seed
 
         return $output;
     }
-
 }

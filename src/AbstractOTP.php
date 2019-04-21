@@ -15,7 +15,6 @@ namespace Rych\OTP;
  */
 abstract class AbstractOTP implements OTPInterface
 {
-
     /**
      * @var Seed
      */
@@ -99,5 +98,4 @@ abstract class AbstractOTP implements OTPInterface
 
         return substr(str_pad(strrev($temp), 8, "\0", STR_PAD_LEFT), 0, 8);
     }
-
 }

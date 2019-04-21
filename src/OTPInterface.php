@@ -15,7 +15,6 @@ namespace Rych\OTP;
  */
 interface OTPInterface
 {
-
     /**
      * Class constructor
      *
@@ -43,5 +42,4 @@ interface OTPInterface
      *                 given counter, or FALSE otherwise.
      */
     public function validate($otp, $counter);
-
 }

@@ -15,7 +15,6 @@ namespace Rych\OTP;
  */
 class TOTP extends HOTP
 {
-
     /**
      * @var integer
      */
@@ -116,5 +115,4 @@ class TOTP extends HOTP
 
         return $counter;
     }
-
 }
