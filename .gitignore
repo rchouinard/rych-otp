@@ -6,3 +6,4 @@ vendor/
 ### Testing/Build ###
 build/
 phpunit.xml
+*.cache
