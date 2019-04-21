@@ -9,7 +9,7 @@
 
 This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
-[RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP 5.3+.
+[RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP.
 
 
 ## Install
@@ -77,7 +77,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 ## Testing
 
 ``` bash
-$ vendor/bin/phpunit -c phpunit.dist.xml
+$ vendor/bin/phpunit
 ```
 
 
