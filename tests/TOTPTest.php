@@ -8,14 +8,15 @@
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Rych\OTP;
+namespace Rych\OTP\Tests;
 
-use PHPUnit\Framework\TestCase as TestCase;
+use Rych\OTP\Seed;
+use Rych\OTP\TOTP;
 
 /**
  * RFC-6238 Time-Based One-Time Password Tests
  */
-class TOTPTest extends TestCase
+class TOTPTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

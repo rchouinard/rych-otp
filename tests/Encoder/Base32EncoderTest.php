@@ -1,7 +1,8 @@
 <?php
 
-namespace Rych\OTP\Encoder;
+namespace Rych\OTP\Tests\Encoder;
 
+use Rych\OTP\Encoder\Base32Encoder;
 use Rych\OTP\Encoder\Exception\RuntimeException;
 
 class Base32EncoderTest extends \PHPUnit\Framework\TestCase

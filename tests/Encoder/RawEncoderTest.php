@@ -1,6 +1,8 @@
 <?php
 
-namespace Rych\OTP\Encoder;
+namespace Rych\OTP\Tests\Encoder;
+
+use Rych\OTP\Encoder\RawEncoder;
 
 class RawEncoderTest extends \PHPUnit\Framework\TestCase
 {

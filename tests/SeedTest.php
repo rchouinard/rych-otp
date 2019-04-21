@@ -8,7 +8,9 @@
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Rych\OTP;
+namespace Rych\OTP\Tests;
+
+use Rych\OTP\Seed;
 
 /**
  * One-Time Password Seed/Key Tests

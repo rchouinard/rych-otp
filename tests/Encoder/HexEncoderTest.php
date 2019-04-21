@@ -1,8 +1,9 @@
 <?php
 
-namespace Rych\OTP\Encoder;
+namespace Rych\OTP\Tests\Encoder;
 
 use Rych\OTP\Encoder\Exception\RuntimeException;
+use Rych\OTP\Encoder\HexEncoder;
 
 class HexEncoderTest extends \PHPUnit\Framework\TestCase
 {

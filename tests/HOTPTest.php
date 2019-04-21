@@ -8,14 +8,15 @@
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Rych\OTP;
+namespace Rych\OTP\Tests;
 
-use PHPUnit\Framework\TestCase as TestCase;
+use Rych\OTP\HOTP;
+use Rych\OTP\Seed;
 
 /**
  * RFC-4226 HMAC-Based One-Time Password Tests
  */
-class HOTPTest extends TestCase
+class HOTPTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
