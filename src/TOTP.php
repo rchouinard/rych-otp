@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Ryan"s OATH-OTP Library
+ * Ryan's OATH-OTP Library
  *
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2019, Ryan Chouinard
@@ -78,29 +78,38 @@ class TOTP extends HOTP
 
     /**
      * {@inheritdoc}
+     * @param  integer $driftOffset Offset used to account for potential hardware RTC drift.
      */
     public function validate(string $otp, int $counter = null, int $driftOffset = 0) : bool
     {
-        if ($counter === null) {
-            $counter = time();
-        }
-        $window = $this->getWindow();
-        $counter = self::timestampToCounter($counter, $this->getTimeStep());
+        $counter = $this->timestampToCounter(($counter ?? time()), $this->getTimeStep());
 
-        $valid = false;
-        $offset = null;
-        $counterLow = max(0, $counter - intval(floor($window / 2)));
-        $counterHigh = max(0, $counter + intval(ceil($window / 2)));
-        for ($current = $counterLow; $current <= $counterHigh; ++$current) {
-            if ($otp === parent::calculate($current)) {
-                $valid = true;
-                $offset = $current - $counter;
-                break;
+        foreach($this->getPossibleWindow() as $current) {
+            if ($otp === parent::calculate($counter + $current + $driftOffset)) {
+                $this->lastCounterOffset = $current + $driftOffset;
+
+                return true;
             }
         }
-        $this->lastCounterOffset = $offset;
 
-        return $valid;
+        $this->lastCounterOffset = null;
+
+        return false;
+    }
+
+    /**
+     * @return array Returns an array of possible window values.
+     */
+    private function getPossibleWindow() : array
+    {
+        $possible = [0];
+        $window = ceil($this->getWindow() / 2);
+
+        if ($window > 0) {
+            $possible = array_merge($possible, range(-$window, -1), range(1, $window));
+        }
+
+        return $possible;
     }
 
     /**
@@ -110,7 +119,7 @@ class TOTP extends HOTP
      * @param  integer $timeStep  The timestep value.
      * @return integer Returns the calculated counter value.
      */
-    private static function timestampToCounter(int $timestamp, int $timeStep) : int
+    private function timestampToCounter(int $timestamp, int $timeStep) : int
     {
         $timestamp = abs(intval($timestamp));
         $counter = intval(($timestamp * 1000) / ($timeStep * 1000));
