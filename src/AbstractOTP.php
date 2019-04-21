@@ -26,7 +26,7 @@ abstract class AbstractOTP implements OTPInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $secret, array $options = [])
+    public function __construct($secret, array $options = [])
     {
         $this->setSecret($secret);
         $this->processOptions($options);
@@ -54,7 +54,7 @@ abstract class AbstractOTP implements OTPInterface
      * @param  Seed|string $secret
      * @return self        Returns an instance of self for method chaining.
      */
-    public function setSecret(string $secret) : self
+    public function setSecret($secret) : self
     {
         if (!$secret instanceof Seed) {
             $secret = new Seed($secret);

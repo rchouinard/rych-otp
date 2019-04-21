@@ -23,7 +23,7 @@ interface OTPInterface
      *                             generating one-time passwords.
      * @return void
      */
-    public function __construct(string $secret, array $options);
+    public function __construct($secret, array $options);
 
     /**
      * Calculate a one-time password from a given counter value
