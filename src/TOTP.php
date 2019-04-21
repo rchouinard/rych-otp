@@ -84,7 +84,7 @@ class TOTP extends HOTP
     {
         $counter = $this->timestampToCounter(($counter ?? time()), $this->getTimeStep());
 
-        foreach($this->getPossibleWindow() as $current) {
+        foreach ($this->getPossibleWindow() as $current) {
             if ($otp === parent::calculate($counter + $current + $driftOffset)) {
                 $this->lastCounterOffset = $current + $driftOffset;
 
