@@ -6,6 +6,10 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 
 ## [unreleased]
 
+## Changed
+ - Update minimum PHP version to >=7.1
+ - Remove dependency on Rych\Random
+
 ## [1.1.1] - 2015-06-29
 
 ### Changed

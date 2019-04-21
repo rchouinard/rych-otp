@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace Rych\OTP;
 
-use Rych\Random\Random;
-use Rych\Random\Encoder\EncoderInterface;
-use Rych\Random\Encoder\Base32Encoder;
-use Rych\Random\Encoder\HexEncoder;
-use Rych\Random\Encoder\RawEncoder;
+use Rych\OTP\Encoder\EncoderInterface;
+use Rych\OTP\Encoder\Base32Encoder;
+use Rych\OTP\Encoder\HexEncoder;
+use Rych\OTP\Encoder\RawEncoder;
 
 /**
  * One-Time Password Seed/Key Class
@@ -147,18 +146,13 @@ class Seed
      * @param  integer $bytes  Optional; number of bytes in seed value.
      *                         Default of 20 produces a 160-bit seed value as
      *                         recommended by RFC 4226 Section 4 R6.
-     * @param  Random  $random Optional; pre-configured instance of
-     *                         the random generator class.
      * @return Seed    Returns an instance of Seed with a random value.
+     *
+     * @codeCoverageIgnore
      */
-    public static function generate(int $bytes = 20, Random $random = null) : self
+    public static function generate(int $bytes = 20) : self
     {
-        if (!$random) {
-            $random = new Random();
-        }
-        $output = $random->getRandomBytes((int) $bytes);
-
-        return new Seed($output);
+        return new Seed(random_bytes($bytes));
     }
 
     /**

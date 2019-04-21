@@ -10,14 +10,10 @@
 
 namespace Rych\OTP;
 
-use PHPUnit\Framework\TestCase as TestCase;
-use Rych\Random\Random;
-use Rych\Random\Generator\MockGenerator;
-
 /**
  * One-Time Password Seed/Key Tests
  */
-class SeedTest extends TestCase
+class SeedTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -108,11 +104,10 @@ class SeedTest extends TestCase
      */
     public function testGenerateMethodReturnsValidSeed()
     {
-        $random = new Random(new MockGenerator());
-        $seed = Seed::generate(8, $random);
+        $seed = Seed::generate(8);
 
-        $this->assertInstanceOf('\\Rych\\OTP\\Seed', $seed);
-        $this->assertEquals(str_repeat(chr(0), 8), $seed->getValue(Seed::FORMAT_RAW));
+        $this->assertInstanceOf(Seed::class, $seed);
+        $this->assertEquals(8, strlen($seed->getValue(Seed::FORMAT_RAW)));
     }
 
     /**
