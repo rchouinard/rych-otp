@@ -1,8 +1,8 @@
 ### Composer ###
-/composer.lock
-/composer.phar
-/vendor/
+composer.lock
+composer.phar
+vendor/
 
 ### Testing/Build ###
-/build/
-/phpunit.xml
+build/
+phpunit.xml
