@@ -2,6 +2,8 @@
 
 namespace Rych\OTP\Encoder;
 
+use Rych\OTP\Encoder\Exception\RuntimeException;
+
 class Base32Encoder implements EncoderInterface
 {
     const CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=";
@@ -30,8 +32,15 @@ class Base32Encoder implements EncoderInterface
         return $encoded;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function decode(string $data) : string
     {
+        if (preg_match("/[^".self::CHARSET."]/", $data) > 0 || (strlen($data) % 8) != 0) {
+            throw new RuntimeException(sprintf("Provided data is not valid Base32: %s", $data));
+        }
+
         $decoded = "";
 
         if (($data = rtrim($data, self::CHARSET[32])) != "") {

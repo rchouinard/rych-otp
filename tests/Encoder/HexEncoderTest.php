@@ -2,6 +2,8 @@
 
 namespace Rych\OTP\Encoder;
 
+use Rych\OTP\Encoder\Exception\RuntimeException;
+
 class HexEncoderTest extends \PHPUnit\Framework\TestCase
 {
     private $encoder;
@@ -25,6 +27,16 @@ class HexEncoderTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function invalidDataProvider() : array
+    {
+        return array (
+            // Encoded, Decoded
+            array ("A"), // not multiple of 2 (1)
+            array ("ABC"), // not multiple of 2 (2)
+            array ("1nV@liD!"), // invalid characters
+        );
+    }
+
     /**
      * @test
      * @dataProvider vectorProvider()
@@ -41,5 +53,15 @@ class HexEncoderTest extends \PHPUnit\Framework\TestCase
     public function decodeMethodProducesExpectedResult(string $encoded, string $decoded) : void
     {
         $this->assertEquals($decoded, $this->encoder->decode($encoded));
+    }
+
+    /**
+     * @test
+     * @dataProvider invalidDataProvider()
+     */
+    public function invalidDataThrowsRuntimeException($data) : void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->encoder->decode($data);
     }
 }

@@ -9,6 +9,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 ## Changed
  - Update minimum PHP version to >=7.1
  - Remove dependency on Rych\Random
+ - Encoders may now throw exceptions when invalid data is passed to decode() method
 
 ## [1.1.1] - 2015-06-29
 
