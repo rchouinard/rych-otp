@@ -49,10 +49,10 @@ class HOTP extends AbstractOTP
         $hashFunction = $this->getHashFunction();
         $secret = $this->getSecret()->getValue(Seed::FORMAT_RAW);
 
-        $counter = self::counterToString($counter);
+        $counter = $this->counterToString($counter);
         $hash = hash_hmac($hashFunction, $counter, $secret, true);
 
-        $otp = self::truncateHash($hash);
+        $otp = $this->truncateHash($hash);
         if ($digits < 10) {
             $otp %= pow(10, $digits);
         }

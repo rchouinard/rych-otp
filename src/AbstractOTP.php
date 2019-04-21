@@ -69,11 +69,10 @@ abstract class AbstractOTP implements OTPInterface
      *
      * Uses the method defined in RFC 4226, § 5.4.
      *
-     * @static
      * @param  string  $hash Hash value.
      * @return integer Returns the truncated hash value.
      */
-    protected static function truncateHash(string $hash) : int
+    protected function truncateHash(string $hash) : int
     {
         $offset = ord($hash[19]) & 0xf;
         $value  = (ord($hash[$offset + 0]) & 0x7f) << 24;
@@ -87,11 +86,10 @@ abstract class AbstractOTP implements OTPInterface
     /**
      * Convert an integer counter into a string of 8 bytes
      *
-     * @static
      * @param  integer $counter The counter value.
      * @return string  Returns an 8-byte binary string.
      */
-    protected static function counterToString(int $counter) : string
+    protected function counterToString(int $counter) : string
     {
         $temp = "";
         while ($counter != 0) {
