@@ -11,12 +11,7 @@ matrix:
       env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
 
 before_script:
-  - travis_retry composer self-update
-  - composer config notify-on-install false
-  - travis_retry composer update --no-interaction --prefer-source
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:
-  - vendor/bin/phpunit --configuration phpunit.xml.dist
-
-after_script:
-  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != '7.0' ]]; then vendor/bin/coveralls --verbose; fi
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
