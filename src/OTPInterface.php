@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Ryan's OATH-OTP Library
  *
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2019, Ryan Chouinard
+ * @copyright Ryan Chouinard <rchouinard@gmail.com>
  * @link https://github.com/rchouinard/rych-otp
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
+
+declare(strict_types=1);
 
 namespace Rych\OTP;
 

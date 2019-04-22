@@ -1,22 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Ryan's OATH-OTP Library
  *
- * @author Ryan Chouinard <rchouinard@gmail.com>
- * @copyright Copyright (c) 2019, Ryan Chouinard
+ * @copyright Ryan Chouinard <rchouinard@gmail.com>
  * @link https://github.com/rchouinard/rych-otp
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
+
+declare(strict_types=1);
 
 namespace Rych\OTP;
 
-use Rych\OTP\Encoder\EncoderInterface;
-use Rych\OTP\Encoder\Base32Encoder;
-use Rych\OTP\Encoder\HexEncoder;
-use Rych\OTP\Encoder\RawEncoder;
+use Rych\OTP\Encoder\{Base32Encoder, EncoderInterface, HexEncoder, RawEncoder};
 
 /**
  * One-Time Password Seed/Key Class
