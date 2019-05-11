@@ -66,6 +66,6 @@ class TOTPTest extends TestCase
     public function testValidateMethodValidatesExpectedValues($counter, $otp)
     {
         $totp = new TOTP(self::SECRET);
-        $this->assertTrue($totp->validate($otp, $counter));
+        $this->assertTrue($totp->verify($otp, $counter));
     }
 }

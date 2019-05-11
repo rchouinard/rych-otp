@@ -9,6 +9,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
 ## Changed
  - Update minimum PHP version to >=7.1
  - Re-implement PR #9 - Allow tokens to drift away from real time (@pavarnos)
+ - Deprecate validate() method in favor of verify()
 
 ## Removed
  - Dependency on Rych\Random - no longer needed in PHP 7+

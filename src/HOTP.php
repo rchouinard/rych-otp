@@ -53,7 +53,7 @@ class HOTP extends AbstractOTP implements OTPInterface
     /**
      * @inheritdoc
      */
-    public function validate(string $otp, int $counter = 0) : bool
+    public function verify(string $otp, int $counter = 0) : bool
     {
         $counter = max(0, $counter);
         $window = $this->getWindow();

@@ -70,7 +70,7 @@ class HOTPTest extends TestCase
     public function testValidateMethodValidatesExpectedValues($counter, $otp)
     {
         $hotp = new HOTP(self::SECRET);
-        $this->assertTrue($hotp->validate($otp, $counter));
+        $this->assertTrue($hotp->verify($otp, $counter));
     }
 
     /**
@@ -92,7 +92,7 @@ class HOTPTest extends TestCase
         // Token ahead by one (inside of window)
         $otp = "359152"; // Token counter value is 2
         $counter = 1;    // Stored counter value is 1
-        $this->assertTrue($hotp->validate($otp, $counter));
+        $this->assertTrue($hotp->verify($otp, $counter));
         $this->assertEquals(1, $hotp->getLastValidCounterOffset());
     }
 
@@ -115,7 +115,7 @@ class HOTPTest extends TestCase
         // Token ahead by two (outside of window)
         $otp = "359152"; // Token counter value is 2
         $counter = 0;    // Stored counter value is 0
-        $this->assertFalse($hotp->validate($otp, $counter));
+        $this->assertFalse($hotp->verify($otp, $counter));
         $this->assertNull($hotp->getLastValidCounterOffset());
     }
 }

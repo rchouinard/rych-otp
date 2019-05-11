@@ -32,11 +32,11 @@ interface OTPInterface
     public function calculate(int $counter) : string;
 
     /**
-     * Validate a one-time password against a given counter value
+     * Verify a one-time password against a given counter value
      *
      * @param   string  $otp        The one-time password value.
      * @param   integer $counter    The counter value.
      * @return  boolean Returns TRUE if the one-time password is valid with the given counter, or FALSE otherwise.
      */
-    public function validate(string $otp, int $counter) : bool;
+    public function verify(string $otp, int $counter) : bool;
 }

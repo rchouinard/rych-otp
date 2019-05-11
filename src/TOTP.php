@@ -75,7 +75,7 @@ class TOTP extends HOTP implements OTPInterface
      * @inheritdoc
      * @param   integer $driftOffset    Offset used to account for potential hardware RTC drift.
      */
-    public function validate(string $otp, int $counter = null, int $driftOffset = 0) : bool
+    public function verify(string $otp, int $counter = null, int $driftOffset = 0) : bool
     {
         $counter = $this->timestampToCounter($counter ?? time(), $this->getTimeStep());
 

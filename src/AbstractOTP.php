@@ -29,6 +29,16 @@ abstract class AbstractOTP
     }
 
     /**
+     * @deprecated User verify() instead.
+     */
+    public function validate(string $otp, int $counter) : bool
+    {
+        trigger_error("The validate() method has been deprecated. Please use verify() instead.", E_USER_DEPRECATED);
+
+        return $this->verify();
+    }
+
+    /**
      * @param   array   $options
      * @return  void
      */
