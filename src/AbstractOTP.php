@@ -44,7 +44,10 @@ abstract class AbstractOTP implements OTPInterface
      */
     public function getLastValidCounterOffset() : ?int
     {
-        trigger_error("The getLastValidCounterOffset() method has been deprecated. Please use getLastOffset() instead.", E_USER_DEPRECATED);
+        trigger_error(
+            "The getLastValidCounterOffset() method has been deprecated. Please use getLastOffset() instead.",
+            E_USER_DEPRECATED
+        );
 
         return $this->getLastOffset();
     }
