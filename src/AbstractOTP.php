@@ -92,4 +92,29 @@ abstract class AbstractOTP
 
         return substr(str_pad(strrev($temp), 8, "\0", STR_PAD_LEFT), 0, 8);
     }
+
+    /**
+     * @deprecated Use getLastOffset() instead.
+     */
+    public function getLastValidCounterOffset() : ?int
+    {
+        trigger_error("The getLastValidCounterOffset() method has been deprecated. Please use getLastOffset() instead.", E_USER_DEPRECATED);
+
+        return $this->getLastOffset();
+    }
+
+    /**
+     * Get the counter offset value of the last valid counter value
+     *
+     * Useful to determine how far ahead the client counter is of the server
+     * value. Returned value will be between 0 and the configured window value.
+     * A return value of null indicates that the last counter verification
+     * failed.
+     *
+     * @return  integer|null    Returns the offset of the last valid counter value.
+     */
+    public function getLastOffset() : ?int
+    {
+        return $this->lastOffset;
+    }
 }
