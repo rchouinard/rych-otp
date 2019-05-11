@@ -14,7 +14,7 @@ namespace Rych\OTP;
 /**
  * One-Time Password Base Class
  */
-abstract class AbstractOTP implements OTPInterface
+abstract class AbstractOTP
 {
     /** @var Seed */
     protected $secret;

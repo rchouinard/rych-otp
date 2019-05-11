@@ -14,7 +14,7 @@ namespace Rych\OTP;
 /**
  * RFC-6238 Time-Based One-Time Password Class
  */
-class TOTP extends HOTP
+class TOTP extends HOTP implements OTPInterface
 {
     /** @var integer */
     protected $timeStep;

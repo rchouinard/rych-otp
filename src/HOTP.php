@@ -16,7 +16,7 @@ use Rych\Otp\Exception\InvalidArgumentException;
 /**
  * RFC-4226 HMAC-Based One-Time Password Class
  */
-class HOTP extends AbstractOTP
+class HOTP extends AbstractOTP implements OTPInterface
 {
     /** @var integer */
     protected $digits;
