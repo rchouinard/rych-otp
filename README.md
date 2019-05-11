@@ -23,23 +23,7 @@ $ composer require rych/otp
 
 ## Usage
 
-The library makes generating and sharing secret keys easy.
-
-```php
-<?php
-
-use Rych\OTP\Seed;
-
-// Generates a 20-byte (160-bit) secret key
-$otpSeed = Seed::generate();
-
-// -OR- use a pre-generated string
-$otpSeed = new Seed('ThisIsMySecretSeed');
-
-// Display secret key details
-printf("Secret (HEX): %s\n", $otpSeed->getValue(Seed::FORMAT_HEX));
-printf("Secret (BASE32): %s\n", $otpSeed->getValue(Seed::FORMAT_BASE32));
-```
+The library makes calculating and verifying OATH one-time passwords easy.
 
 When a user attempts to login, they should be prompted to provide the OTP
 displayed on their device. The library can then validate the provided OTP
@@ -50,16 +34,17 @@ using the user's shared secret key.
 
 use Rych\OTP\HOTP;
 
-$otpSeed = $userObject->getOTPSeed();
-$otpCounter = $userObject->getOTPCounter();
-$providedOTP = $requestObject->getPost('otp');
+$otpSecret = $userObject->getOtpSecret();
+$otpCounter = $userObject->getOtpCounter();
+$providedOTP = $requestObject->getPost("otp");
 
-// The constructor will accept a Seed object or a string
-$otplib = new HOTP($otpSeed);
-if ($otplib->validate($providedOTP, $otpCounter)) {
+// $otpSecret is now assumed to be the raw secret string, sans encoding
+
+$otplib = new HOTP($otpSecret);
+if ($otplib->verify($providedOTP, $otpCounter)) {
     // Advance the application's stored counter
     // This bit is important for HOTP but not done for TOTP
-    $userObject->incrementOTPCounter($otplib->getLastValidCounterOffset() + 1);
+    $userObject->incrementOTPCounter($otplib->getLastOffset() + 1);
 
     // Now the user is authenticated
 }
