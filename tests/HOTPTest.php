@@ -21,12 +21,7 @@ class HOTPTest extends TestCase
 {
     protected const SECRET = "12345678901234567890";
 
-    /**
-     * Data provider for test vectors
-     *
-     * @return array
-     */
-    public function getTestVectors()
+    public function vectorProvider() : array
     {
         return [
             // Adapted from RFC 4226
@@ -44,78 +39,54 @@ class HOTPTest extends TestCase
     }
 
     /**
-     * Test that the calculate method produces OTP values expected by RFC 4226
-     *
      * @test
-     * @dataProvider getTestVectors()
-     * @param  integer $counter
-     * @param  string  $otp
-     * @return void
+     * @dataProvider vectorProvider()
+     *
+     * @param   int     $counter
+     * @param   string  $otp
      */
-    public function testCalculateMethodProducesExpectedValues($counter, $otp)
+    public function calculateMethodProducesExpectedValues(int $counter, string $otp) : void
     {
-        $hotp = new HOTP(self::SECRET);
+        $hotp = new Hotp(self::SECRET);
+
         $this->assertEquals($otp, $hotp->calculate($counter));
     }
 
     /**
-     * Test that the validate method validates OTP values expected by RFC 4226
-     *
      * @test
-     * @dataProvider getTestVectors()
-     * @param  integer $counter
-     * @param  string  $otp
-     * @return void
+     * @dataProvider vectorProvider()
+     *
+     * @param   int     $counter
+     * @param   string  $otp
      */
-    public function testValidateMethodValidatesExpectedValues($counter, $otp)
+    public function verifyMethodVerifiesValidOtp(int $counter, string $otp) : void
     {
-        $hotp = new HOTP(self::SECRET);
+        $hotp = new Hotp(self::SECRET);
+
         $this->assertTrue($hotp->verify($otp, $counter));
     }
 
     /**
-     * Test that the validate method validates OTP values inside window
-     *
-     * This test will check that a token which is ahead of the application"s
-     * counter can still be validated. This can happen if the user refreshes
-     * the token (requests a new OTP) unnecessarily.
-     *
      * @test
-     * @return void
      */
-    public function testValidateMethodValidatesValuesInsideWindow()
+    public function verifyMethodHandlesWindowCorrectly() : void
     {
-        // Window of 1, meaning we"ll allow the token to be ahead by no
-        // more than one.
-        $hotp = new HOTP(self::SECRET, ["window" => 1]);
+        // Allow 2 tokens before and after counter
+        $hotp = new Hotp(self::SECRET, ["window" => 2]);
 
-        // Token ahead by one (inside of window)
-        $otp = "359152"; // Token counter value is 2
-        $counter = 1;    // Stored counter value is 1
-        $this->assertTrue($hotp->verify($otp, $counter));
+        $counter = 100;
+        $otp = $hotp->calculate($counter);
+
+        // Within window
+        $this->assertTrue($hotp->verify($otp, $counter - 1));
+        $this->assertEquals(-1, $hotp->getLastOffset());
+        $this->assertTrue($hotp->verify($otp, $counter + 1));
         $this->assertEquals(1, $hotp->getLastOffset());
-    }
 
-    /**
-     * Test that the validate method rejects OTP values outside window
-     *
-     * This test will check that a token which is too far ahead of the
-     * application"s counter will be rejected. This can happen if the user
-     * refreshes the token (requests a new OTP) unnecessarily too many times.
-     *
-     * @test
-     * @return void
-     */
-    public function testValidateMethodRejectsValuesOutsideWindow()
-    {
-        // Window of 1, meaning we"ll allow the token to be ahead by no
-        // more than one.
-        $hotp = new HOTP(self::SECRET, ["window" => 1]);
-
-        // Token ahead by two (outside of window)
-        $otp = "359152"; // Token counter value is 2
-        $counter = 0;    // Stored counter value is 0
-        $this->assertFalse($hotp->verify($otp, $counter));
-        $this->assertNull($hotp->getLastOffset());
+        // Outside window
+        $this->assertFalse($hotp->verify($otp, $counter - 3));
+        $this->assertEquals(null, $hotp->getLastOffset());
+        $this->assertFalse($hotp->verify($otp, $counter + 3));
+        $this->assertEquals(null, $hotp->getLastOffset());
     }
 }

@@ -14,10 +14,10 @@ namespace Rych\OTP;
 /**
  * RFC-6238 Time-Based One-Time Password Class
  */
-class TOTP extends HOTP implements OTPInterface
+class TOTP extends HOTP
 {
     /**
-     * @inheritdoc
+     * @inheritdoc OTPInterface::__construct()
      */
     public function __construct(string $secret, array $options = [])
     {
@@ -26,68 +26,35 @@ class TOTP extends HOTP implements OTPInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritdoc OTPInterface::calculate()
      */
-    public function calculate(int $counter = null) : string
+    public function calculate(int $timestamp = null) : string
     {
-        if ($counter === null) {
-            $counter = time();
-        }
+        $counter = $this->timestampToCounter($timestamp ?? time());
 
-        $counter = self::timestampToCounter($counter, $this->options["interval"]);
-        $otp = parent::calculate($counter);
-
-        return $otp;
+        return parent::calculate($counter);
     }
 
     /**
-     * @inheritdoc
-     * @param   integer $driftOffset    Offset used to account for potential hardware RTC drift.
+     * @inheritdoc OTPInterface::verify()
      */
-    public function verify(string $otp, int $counter = null, int $driftOffset = 0) : bool
+    public function verify(string $otp, int $timestamp = null) : bool
     {
-        $counter = $this->timestampToCounter($counter ?? time(), $this->options["interval"]);
+        $counter = $this->timestampToCounter($timestamp ?? time());
 
-        foreach ($this->getPossibleWindow() as $current) {
-            if ($otp === parent::calculate($counter + $current + $driftOffset)) {
-                $this->lastOffset = $current + $driftOffset;
-
-                return true;
-            }
-        }
-
-        $this->lastOffset = null;
-
-        return false;
-    }
-
-    /**
-     * @return  array   Returns an array of possible window values.
-     */
-    private function getPossibleWindow() : array
-    {
-        $possible = [0];
-        $window = ceil($this->options["window"] / 2);
-
-        if ($window > 0) {
-            $possible = array_merge($possible, range(-$window, -1), range(1, $window));
-        }
-
-        return $possible;
+        return parent::verify($otp, $counter);
     }
 
     /**
      * Convert a timestamp into a usable counter value
      *
      * @param   integer $timestamp  A UNIX timestamp.
-     * @param   integer $timeStep   The timestep value.
      * @return  integer Returns the calculated counter value.
      */
-    private function timestampToCounter(int $timestamp, int $timeStep) : int
+    protected function timestampToCounter(int $timestamp) : int
     {
         $timestamp = (int) abs($timestamp);
-        $counter = (int) (($timestamp * 1000) / ($timeStep * 1000));
 
-        return $counter;
+        return (int) (($timestamp * 1000) / ($this->options["interval"] * 1000));
     }
 }
