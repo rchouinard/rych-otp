@@ -16,6 +16,9 @@ namespace Rych\OTP;
  */
 abstract class AbstractOTP
 {
+    /** @var int */
+    protected $lastOffset;
+
     /** @var array */
     protected $options = [
         "digits" => 6,
@@ -36,7 +39,7 @@ abstract class AbstractOTP
     }
 
     /**
-     * @deprecated User verify() instead.
+     * @deprecated Use verify() instead.
      */
     public function validate(string $otp, int $counter) : bool
     {

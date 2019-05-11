@@ -50,13 +50,13 @@ class TOTP extends HOTP implements OTPInterface
 
         foreach ($this->getPossibleWindow() as $current) {
             if ($otp === parent::calculate($counter + $current + $driftOffset)) {
-                $this->lastCounterOffset = $current + $driftOffset;
+                $this->lastOffset = $current + $driftOffset;
 
                 return true;
             }
         }
 
-        $this->lastCounterOffset = null;
+        $this->lastOffset = null;
 
         return false;
     }

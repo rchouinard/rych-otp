@@ -93,7 +93,7 @@ class HOTPTest extends TestCase
         $otp = "359152"; // Token counter value is 2
         $counter = 1;    // Stored counter value is 1
         $this->assertTrue($hotp->verify($otp, $counter));
-        $this->assertEquals(1, $hotp->getLastValidCounterOffset());
+        $this->assertEquals(1, $hotp->getLastOffset());
     }
 
     /**
@@ -116,6 +116,6 @@ class HOTPTest extends TestCase
         $otp = "359152"; // Token counter value is 2
         $counter = 0;    // Stored counter value is 0
         $this->assertFalse($hotp->verify($otp, $counter));
-        $this->assertNull($hotp->getLastValidCounterOffset());
+        $this->assertNull($hotp->getLastOffset());
     }
 }

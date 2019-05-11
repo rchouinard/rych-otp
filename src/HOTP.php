@@ -18,18 +18,6 @@ use Rych\Otp\Exception\InvalidArgumentException;
  */
 class HOTP extends AbstractOTP implements OTPInterface
 {
-    /** @var integer */
-    protected $digits;
-
-    /** @var string */
-    protected $hashFunction;
-
-    /** @var integer */
-    protected $lastCounterOffset;
-
-    /** @var integer */
-    protected $window;
-
     /**
      * @inheritdoc
      */
@@ -67,9 +55,19 @@ class HOTP extends AbstractOTP implements OTPInterface
                 break;
             }
         }
-        $this->lastCounterOffset = $offset;
+        $this->lastOffset = $offset;
 
         return $valid;
+    }
+
+    /**
+     * @deprecated Use getLastOffset() instead.
+     */
+    public function getLastValidCounterOffset() : ?int
+    {
+        trigger_error("The getLastValidCounterOffset() method has been deprecated. Please use getLastOffset() instead.", E_USER_DEPRECATED);
+
+        return $this->getLastOffset();
     }
 
     /**
@@ -82,8 +80,8 @@ class HOTP extends AbstractOTP implements OTPInterface
      *
      * @return  integer|null    Returns the offset of the last valid counter value.
      */
-    public function getLastValidCounterOffset() : ?int
+    public function getLastOffset() : ?int
     {
-        return $this->lastCounterOffset;
+        return $this->lastOffset;
     }
 }

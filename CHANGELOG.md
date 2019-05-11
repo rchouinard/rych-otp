@@ -10,6 +10,7 @@ This file adheres to the format published by [http://keepachangelog.com/](http:/
  - Update minimum PHP version to >=7.1
  - Re-implement PR #9 - Allow tokens to drift away from real time (@pavarnos)
  - Deprecate validate() method in favor of verify()
+ - Deprecate getLastValidCounterOffset() method in favor of getLastOffset()
  - Class options must now be passed as array on instantiation
 
 ## Removed
