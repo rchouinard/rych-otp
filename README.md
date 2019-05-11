@@ -11,19 +11,13 @@ This library provides HMAC and time-based one-time password functionality as
 defined by [RFC 4226](http://www.ietf.org/rfc/rfc4226.txt) and
 [RFC 6238](http://www.ietf.org/rfc/rfc6238.txt) for PHP.
 
+## Installation
 
-## Install
-
-Via Composer
-
-``` bash
+```bash
 $ composer require rych/otp
 ```
 
-
 ## Usage
-
-The library makes calculating and verifying OATH one-time passwords easy.
 
 When a user attempts to login, they should be prompted to provide the OTP
 displayed on their device. The library can then validate the provided OTP
@@ -53,23 +47,31 @@ if ($otplib->verify($providedOTP, $otpCounter)) {
 Time-based OTPs are handled the same way, except you don't have a counter value
 to track or increment.
 
+### Options
+
+The OTP classes take an array of options as the second constructor argument.
+In most cases the defaults are sufficient, but you may run across situations
+where more control is required.
+
+ - **digits** *(Default: 6)* - Length of OTP values returned by the class.
+ - **hash_func** *(Default: sha1)* - Hash function used to caluculate OTP value.
+ - **window** *(Default: 2)* - Number of counter values before and after the
+   given value which should be considered valid. Used to handle counter drift.
+ - **interval** *(TOTP only; Default: 30)* - Time in seconds an OTP value is valid.
 
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
-
 ## Testing
 
-``` bash
+```bash
 $ vendor/bin/phpunit
 ```
-
 
 ## Security
 
 If you discover any security related issues, please email rchouinard@gmail.com instead of using the issue tracker.
-
 
 ## License
 

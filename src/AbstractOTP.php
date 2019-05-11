@@ -23,14 +23,14 @@ abstract class AbstractOTP implements OTPInterface
     protected $options = [
         "digits" => 6,
         "hash_func" => "sha1",
-        "window" => "2",
+        "window" => 2,
     ];
 
     /** @var string */
     protected $secret;
 
     /**
-     * @inheritdoc
+     * @inheritdoc OTPInterface::__construct()
      */
     public function __construct(string $secret, array $options = [])
     {
