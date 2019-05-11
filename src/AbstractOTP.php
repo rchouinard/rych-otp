@@ -16,6 +16,13 @@ namespace Rych\OTP;
  */
 abstract class AbstractOTP
 {
+    /** @var array */
+    protected $options = [
+        "digits" => 6,
+        "hash_func" => "sha1",
+        "window" => "2",
+    ];
+
     /** @var string */
     protected $secret;
 
@@ -25,7 +32,7 @@ abstract class AbstractOTP
     public function __construct(string $secret, array $options = [])
     {
         $this->secret = $secret;
-        $this->processOptions($options);
+        $this->options = $this->processOptions($options);
     }
 
     /**
@@ -40,9 +47,12 @@ abstract class AbstractOTP
 
     /**
      * @param   array   $options
-     * @return  void
+     * @return  array
      */
-    abstract protected function processOptions(array $options) : void;
+    protected function processOptions(array $options) : array
+    {
+        return array_merge($this->options, array_change_key_case($options, CASE_LOWER));
+    }
 
     /**
      * Extract 4 bytes from a hash value

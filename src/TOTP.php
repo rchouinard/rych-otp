@@ -16,20 +16,12 @@ namespace Rych\OTP;
  */
 class TOTP extends HOTP implements OTPInterface
 {
-    /** @var integer */
-    protected $timeStep;
-
     /**
      * @inheritdoc
      */
     public function __construct(string $secret, array $options = [])
     {
-        $options = array_merge([
-            "window" => 0,
-            "timestep" => 30,
-        ], array_change_key_case($options, CASE_LOWER));
-
-        $this->setTimeStep($options["timestep"]);
+        $this->options["interval"] = 30;
         parent::__construct($secret, $options);
     }
 
@@ -42,33 +34,10 @@ class TOTP extends HOTP implements OTPInterface
             $counter = time();
         }
 
-        $counter = self::timestampToCounter($counter, $this->getTimeStep());
+        $counter = self::timestampToCounter($counter, $this->options["interval"]);
         $otp = parent::calculate($counter);
 
         return $otp;
-    }
-
-    /**
-     * Get the timestep value
-     *
-     * @return  integer Returns the timestep value.
-     */
-    public function getTimeStep()
-    {
-        return $this->timeStep;
-    }
-
-    /**
-     * Set the timestep value
-     *
-     * @param   integer $timeStep   The timestep value.
-     * @return  self    Returns an instance of self for method chaining.
-     */
-    public function setTimeStep(int $timeStep) : self
-    {
-        $this->timeStep = abs($timeStep);
-
-        return $this;
     }
 
     /**
@@ -77,7 +46,7 @@ class TOTP extends HOTP implements OTPInterface
      */
     public function verify(string $otp, int $counter = null, int $driftOffset = 0) : bool
     {
-        $counter = $this->timestampToCounter($counter ?? time(), $this->getTimeStep());
+        $counter = $this->timestampToCounter($counter ?? time(), $this->options["interval"]);
 
         foreach ($this->getPossibleWindow() as $current) {
             if ($otp === parent::calculate($counter + $current + $driftOffset)) {
@@ -98,7 +67,7 @@ class TOTP extends HOTP implements OTPInterface
     private function getPossibleWindow() : array
     {
         $possible = [0];
-        $window = ceil($this->getWindow() / 2);
+        $window = ceil($this->options["window"] / 2);
 
         if ($window > 0) {
             $possible = array_merge($possible, range(-$window, -1), range(1, $window));
