@@ -16,13 +16,11 @@ namespace Rych\OTP;
  */
 class TOTP extends HOTP
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $timeStep;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function __construct($secret, array $options = [])
     {
@@ -36,7 +34,7 @@ class TOTP extends HOTP
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function calculate(int $counter = null) : string
     {
@@ -53,7 +51,7 @@ class TOTP extends HOTP
     /**
      * Get the timestep value
      *
-     * @return integer Returns the timestep value.
+     * @return  integer Returns the timestep value.
      */
     public function getTimeStep()
     {
@@ -63,24 +61,23 @@ class TOTP extends HOTP
     /**
      * Set the timestep value
      *
-     * @param  integer $timeStep The timestep value.
-     * @return self    Returns an instance of self for method chaining.
+     * @param   integer $timeStep   The timestep value.
+     * @return  self    Returns an instance of self for method chaining.
      */
     public function setTimeStep(int $timeStep) : self
     {
-        $timeStep = abs(intval($timeStep));
-        $this->timeStep = $timeStep;
+        $this->timeStep = abs($timeStep);
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
-     * @param  integer $driftOffset Offset used to account for potential hardware RTC drift.
+     * @inheritdoc
+     * @param   integer $driftOffset    Offset used to account for potential hardware RTC drift.
      */
     public function validate(string $otp, int $counter = null, int $driftOffset = 0) : bool
     {
-        $counter = $this->timestampToCounter(($counter ?? time()), $this->getTimeStep());
+        $counter = $this->timestampToCounter($counter ?? time(), $this->getTimeStep());
 
         foreach ($this->getPossibleWindow() as $current) {
             if ($otp === parent::calculate($counter + $current + $driftOffset)) {
@@ -96,7 +93,7 @@ class TOTP extends HOTP
     }
 
     /**
-     * @return array Returns an array of possible window values.
+     * @return  array   Returns an array of possible window values.
      */
     private function getPossibleWindow() : array
     {
@@ -113,14 +110,14 @@ class TOTP extends HOTP
     /**
      * Convert a timestamp into a usable counter value
      *
-     * @param  integer $timestamp A UNIX timestamp.
-     * @param  integer $timeStep  The timestep value.
-     * @return integer Returns the calculated counter value.
+     * @param   integer $timestamp  A UNIX timestamp.
+     * @param   integer $timeStep   The timestep value.
+     * @return  integer Returns the calculated counter value.
      */
     private function timestampToCounter(int $timestamp, int $timeStep) : int
     {
-        $timestamp = abs(intval($timestamp));
-        $counter = intval(($timestamp * 1000) / ($timeStep * 1000));
+        $timestamp = (int) abs($timestamp);
+        $counter = (int) (($timestamp * 1000) / ($timeStep * 1000));
 
         return $counter;
     }

@@ -14,30 +14,28 @@ namespace Rych\OTP;
 use Rych\OTP\Encoder\{Base32Encoder, EncoderInterface, HexEncoder, RawEncoder};
 
 /**
- * One-Time Password Seed/Key Class
+ * One-Time Password Secret/Key Class
  */
 class Seed
 {
-    const FORMAT_BASE32 = "base32";
-    const FORMAT_HEX = "hex";
-    const FORMAT_RAW = "raw";
-
-    /**
-     * @var EncoderInterface
+    /** @var string Marker constant for base32 format
      */
+    public const FORMAT_BASE32 = "base32";
+
+    /** @var string Marker constant for hex format */
+    public const FORMAT_HEX = "hex";
+
+    /** @var string Marker constant for raw format */
+    public const FORMAT_RAW = "raw";
+
+    /** @var EncoderInterface Instance of secret value encoder/decoder class */
     private $encoder;
 
-    /**
-     * @var string
-     */
+    /** @var string Secret value */
     private $value;
 
     /**
-     * Class constructor
-     *
-     * @param  string  $value Optional; the seed value. If provided, the format
-     *                        will be auto-detected.
-     * @return void
+     * @param   string  $value  Secret value as a string.
      */
     public function __construct(string $value = null)
     {
@@ -49,9 +47,9 @@ class Seed
     }
 
     /**
-     * Get the output format
+     * Get the default encoding format
      *
-     * @return string  Returns the current output format.
+     * @return  string  Returns the default encoding format.
      */
     public function getFormat() : string
     {
@@ -71,10 +69,10 @@ class Seed
     }
 
     /**
-     * Set the output format
+     * Set the default encoding format
      *
-     * @param  string  $format The new output format.
-     * @return self    Returns an instance of self for method chaining.
+     * @param   string  $format The new default encoding format.
+     * @return  self    Returns an instance of self for method chaining.
      */
     public function setFormat(string $format) : self
     {
@@ -94,11 +92,13 @@ class Seed
     }
 
     /**
-     * Get the seed value, optionally specifying an output format
+     * Get the secret value
      *
-     * @param  string  $format Optional; output format. If not provided, value
-     *                         is returned in the default format.
-     * @return string  Returns the seed value in the requested format.
+     * @param   string  $format Encoding format to use.
+     *                          If not provided, default of `hex` or value
+     *                          previously provided to `setFormat()` will be
+     *                          used.
+     * @return  string  Returns the secret value.
      */
     public function getValue(string $format = null) : string
     {
@@ -106,12 +106,12 @@ class Seed
     }
 
     /**
-     * Set the seed value, optionally specifying an input format
+     * Set the secret value
      *
-     * @param  string  $value  The seed value.
-     * @param  string  $format Optional; input format. If not provided, format
-     *                         will be auto-detected.
-     * @return self    Returns an instance of self for method chaining.
+     * @param   string  $value  The secret value.
+     * @param   string  $format Encoding format of supplied string.
+     *                          If not provided, will be auto-detected.
+     * @return  self    Returns an instance of self for method chaining.
      */
     public function setValue(string $value, string $format = null) : self
     {
@@ -121,29 +121,27 @@ class Seed
     }
 
     /**
-     * Get a string representation of the seed value
+     * Cast this instance to a string
      *
-     * @return string  Returns the seed value in the default format.
+     * @return  string  Returns the secret value in the default format.
      */
     public function __toString() : string
     {
         $value = $this->value;
         if ($this->encoder instanceof EncoderInterface) {
-            $value = $this->encoder->encode($value);
+            $value = $this->encoder->encode($this->value);
         }
 
-        return (string) $value;
+        return $value;
     }
 
     /**
-     * Generate a new {@link Seed} instance with a new random value
+     * Generate a new secure random secret value
      *
-     * @param  integer $bytes  Optional; number of bytes in seed value.
-     *                         Default of 20 produces a 160-bit seed value as
-     *                         recommended by RFC 4226 Section 4 R6.
-     * @return Seed    Returns an instance of Seed with a random value.
-     *
-     * @codeCoverageIgnore
+     * @param   integer $bytes  Number of bytes to generate.
+     *                          Default of 20 produces a 160-bit value as
+     *                          recommended by RFC 4226 Section 4 R6.
+     * @return  self    Returns an instance of Seed with a random value.
      */
     public static function generate(int $bytes = 20) : self
     {
@@ -151,60 +149,56 @@ class Seed
     }
 
     /**
-     * Attempt to decode a seed value
+     * Decode a string
      *
-     * @param  string  $seed   The encoded seed value.
-     * @param  string  $format Optional; value encoding format. If not
-     *                         provided, format will be auto-detected.
-     * @return string  Returns the decoded seed value.
+     * @param   string  $data   The string to decode.
+     * @param   string  $format Encoding format of supplied string.
+     *                          If not provided, will be auto-detected.
+     * @return  string  Returns The decoded value.
      */
-    private function decode(string $seed, string $format = null) : string
+    private function decode(string $data, string $format = null) : string
     {
         $encoder = new RawEncoder();
 
         // Auto-detect
         if ($format === null) {
-            if (preg_match("/^[0-9a-f]+$/i", $seed)) {
+            if (preg_match("/^[0-9a-f]+$/i", $data)) {
                 $encoder = new HexEncoder();
-            } elseif (preg_match("/^[2-7a-z]+$/i", $seed)) {
+            } elseif (preg_match("/^[2-7a-z]+$/i", $data)) {
                 $encoder = new Base32Encoder();
             }
         // User-specified
-        } else {
-            if ($format == self::FORMAT_HEX) {
-                $encoder = new HexEncoder();
-            } elseif ($format == self::FORMAT_BASE32) {
-                $encoder = new Base32Encoder();
-            }
+        } elseif ($format === self::FORMAT_HEX) {
+            $encoder = new HexEncoder();
+        } elseif ($format === self::FORMAT_BASE32) {
+            $encoder = new Base32Encoder();
         }
 
-        $output = $encoder->decode($seed);
-
-        return $output;
+        return $encoder->decode($data);
     }
 
     /**
-     * Attempt to encode a seed value
+     * Encode a string
      *
-     * @param  string  $seed   The seed value.
-     * @param  string  $format Optional; target encode format. If not provided,
-     *                         default format is assumed.
-     * @return string  Returns the encoded seed value.
+     * @param   string  $data   The string to encode.
+     * @param   string  $format Encoding format to use.
+     *                          If not provided, default of `hex` or value
+     *                          previously provided to `setFormat()` will be
+     *                          used.
+     * @return  string  Returns the encoded value.
      */
-    private function encode(string $seed, string $format = null) : string
+    private function encode(string $data, string $format = null) : string
     {
         $encoder = $this->encoder;
 
-        if ($format == self::FORMAT_HEX) {
+        if ($format === self::FORMAT_HEX) {
             $encoder = new HexEncoder();
-        } elseif ($format == self::FORMAT_BASE32) {
+        } elseif ($format === self::FORMAT_BASE32) {
             $encoder = new Base32Encoder();
-        } elseif ($format == self::FORMAT_RAW) {
+        } elseif ($format === self::FORMAT_RAW) {
             $encoder = new RawEncoder();
         }
 
-        $output = $encoder->encode($seed);
-
-        return $output;
+        return $encoder->encode($data);
     }
 }

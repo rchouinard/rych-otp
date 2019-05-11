@@ -18,28 +18,20 @@ use Rych\Otp\Exception\InvalidArgumentException;
  */
 class HOTP extends AbstractOTP
 {
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $digits;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $hashFunction;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $lastCounterOffset;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $window;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function calculate(int $counter = 0) : string
     {
@@ -59,7 +51,7 @@ class HOTP extends AbstractOTP
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(string $otp, int $counter = 0) : bool
     {
@@ -83,7 +75,7 @@ class HOTP extends AbstractOTP
     /**
      * Get the number of digits in the one-time password
      *
-     * @return integer Returns the number of digits.
+     * @return  integer Returns the number of digits.
      */
     public function getDigits() : int
     {
@@ -93,10 +85,10 @@ class HOTP extends AbstractOTP
     /**
      * Set the number of digits in the one-time password
      *
-     * @param  integer $digits The number of digits.
-     * @return self    Returns an instance of self for method chaining.
-     * @throws InvalidArgumentException Thrown if the requested number of
-     *                 digits is outside of the inclusive range 1-10.
+     * @param   integer $digits The number of digits.
+     * @return  self    Returns an instance of self for method chaining.
+     * @throws  InvalidArgumentException    Thrown if the requested number of
+     *                  digits is outside of the inclusive range 1-10.
      */
     public function setDigits(int $digits) : self
     {
@@ -112,7 +104,7 @@ class HOTP extends AbstractOTP
     /**
      * Get the hash function
      *
-     * @return string  Returns the hash function.
+     * @return  string  Returns the hash function.
      */
     public function getHashFunction() : string
     {
@@ -122,10 +114,10 @@ class HOTP extends AbstractOTP
     /**
      * Set the hash function
      *
-     * @param  string  $hashFunction The hash function.
-     * @return self    Returns an instance of self for method chaining.
-     * @throws InvalidArgumentException Thrown if the supplied hash function
-     *                 is not supported.
+     * @param   string  $hashFunction   The hash function.
+     * @return  self    Returns an instance of self for method chaining.
+     * @throws  InvalidArgumentException    Thrown if the supplied hash function
+     *                                      is not supported.
      */
     public function setHashFunction(string $hashFunction) : self
     {
@@ -146,7 +138,7 @@ class HOTP extends AbstractOTP
      * A return value of null indicates that the last counter verification
      * failed.
      *
-     * @return integer|null Returns the offset of the last valid counter value.
+     * @return  integer|null    Returns the offset of the last valid counter value.
      */
     public function getLastValidCounterOffset() : ?int
     {
@@ -156,7 +148,7 @@ class HOTP extends AbstractOTP
     /**
      * Get the window value
      *
-     * @return integer Returns the window value.
+     * @return  integer Returns the window value.
      */
     public function getWindow() : int
     {
@@ -166,8 +158,8 @@ class HOTP extends AbstractOTP
     /**
      * Set the window value
      *
-     * @param  integer $window The window value.
-     * @return self    Returns an instance of self for method chaining.
+     * @param   integer $window The window value.
+     * @return  self    Returns an instance of self for method chaining.
      */
     public function setWindow(int $window) : self
     {
@@ -178,7 +170,7 @@ class HOTP extends AbstractOTP
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function processOptions(array $options) : void
     {

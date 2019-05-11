@@ -22,9 +22,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that the get/set format methods work as expected
      *
      * @test
-     * @return void
      */
-    public function testGetFormatAndSetFormatMethodsBehaveAsExpected()
+    public function getFormatAndSetFormatMethodsBehaveAsExpected()
     {
         $seed = new Seed();
 
@@ -42,9 +41,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that the global default format setting affects output methods
      *
      * @test
-     * @return void
      */
-    public function testSetFormatMethodProperlyControlsDefaultOutputFormat()
+    public function setFormatMethodProperlyControlsDefaultOutputFormat()
     {
         $seed = new Seed();
         $seed->setValue("SECRETKEY1secretkey2", Seed::FORMAT_RAW);
@@ -66,9 +64,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that the set value method respects the format parameter
      *
      * @test
-     * @return void
      */
-    public function testSetValueRespectsFormatParameter()
+    public function setValueRespectsFormatParameter()
     {
         $seed = new Seed();
 
@@ -86,9 +83,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that the get value method respects the format parameter
      *
      * @test
-     * @return void
      */
-    public function testGetValueRespectsFormatParameter()
+    public function getValueRespectsFormatParameter()
     {
         $seed = new Seed();
         $seed->setValue("SECRETKEY1secretkey2", Seed::FORMAT_RAW);
@@ -102,9 +98,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that static generate method returns configured Seed
      *
      * @test
-     * @return void
      */
-    public function testGenerateMethodReturnsValidSeed()
+    public function generateMethodReturnsValidSeed()
     {
         $seed = Seed::generate(8);
 
@@ -116,14 +111,13 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that static generate method returns random Seed
      *
      * @test
-     * @return void
      */
-    public function testGenerateMethodProducesRandomSeed()
+    public function generateMethodProducesRandomSeed()
     {
         $seed1 = Seed::generate(8);
         $seed2 = Seed::generate(8);
 
-        // Randomness is near impossible to teset for, so just make sure
+        // Randomness is near impossible to test for, so just make sure
         // two generated instances don't contain the same value
         $this->assertFalse($seed1->getValue() == $seed2->getValue());
     }
@@ -132,9 +126,8 @@ class SeedTest extends \PHPUnit\Framework\TestCase
      * Test that the Seed constructor is able to detect passed-in seed formats
      *
      * @test
-     * @return void
      */
-    public function testPassingSeedValueToConstructorCorrectlyDetectsValueFormat()
+    public function passingSeedValueToConstructorCorrectlyDetectsValueFormat()
     {
         // Base32
         $seed = new Seed("KNCUGUSFKRFUKWJRONSWG4TFORVWK6JS");
