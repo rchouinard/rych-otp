@@ -17,12 +17,11 @@ namespace Rych\OTP;
 interface OTPInterface
 {
     /**
-     * @param   Seed|string $secret     The shared secret key.
-     * @param   array       $options    An array of options to be used when
-     *                                  generating one-time passwords.
+     * @param   string  $secret     The shared secret key.
+     * @param   array   $options    An array of options to be used when generating one-time passwords.
      * @return  void
      */
-    public function __construct($secret, array $options);
+    public function __construct(string $secret, array $options);
 
     /**
      * Calculate a one-time password from a given counter value
@@ -37,8 +36,7 @@ interface OTPInterface
      *
      * @param   string  $otp        The one-time password value.
      * @param   integer $counter    The counter value.
-     * @return  boolean Returns TRUE if the one-time password is valid with the
-     *                  given counter, or FALSE otherwise.
+     * @return  boolean Returns TRUE if the one-time password is valid with the given counter, or FALSE otherwise.
      */
     public function validate(string $otp, int $counter) : bool;
 }

@@ -22,7 +22,7 @@ class TOTP extends HOTP implements OTPInterface
     /**
      * @inheritdoc
      */
-    public function __construct($secret, array $options = [])
+    public function __construct(string $secret, array $options = [])
     {
         $options = array_merge([
             "window" => 0,

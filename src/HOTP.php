@@ -37,7 +37,7 @@ class HOTP extends AbstractOTP implements OTPInterface
     {
         $digits = $this->getDigits();
         $hashFunction = $this->getHashFunction();
-        $secret = $this->getSecret()->getValue(Seed::FORMAT_RAW);
+        $secret = $this->secret;
 
         $counter = $this->counterToString($counter);
         $hash = hash_hmac($hashFunction, $counter, $secret, true);

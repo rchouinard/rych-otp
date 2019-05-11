@@ -16,15 +16,15 @@ namespace Rych\OTP;
  */
 abstract class AbstractOTP
 {
-    /** @var Seed */
+    /** @var string */
     protected $secret;
 
     /**
      * @inheritdoc
      */
-    public function __construct($secret, array $options = [])
+    public function __construct(string $secret, array $options = [])
     {
-        $this->setSecret($secret);
+        $this->secret = $secret;
         $this->processOptions($options);
     }
 
@@ -33,32 +33,6 @@ abstract class AbstractOTP
      * @return  void
      */
     abstract protected function processOptions(array $options) : void;
-
-    /**
-     * Get the shared secret
-     *
-     * @return  Seed    Returns an encoded {@link Seed} instance.
-     */
-    public function getSecret() : Seed
-    {
-        return $this->secret;
-    }
-
-    /**
-     * Set the shared secret
-     *
-     * @param   Seed|string $secret
-     * @return  self        Returns an instance of self for method chaining.
-     */
-    public function setSecret($secret) : self
-    {
-        if (!$secret instanceof Seed) {
-            $secret = new Seed($secret);
-        }
-        $this->secret = $secret;
-
-        return $this;
-    }
 
     /**
      * Extract 4 bytes from a hash value

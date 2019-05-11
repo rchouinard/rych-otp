@@ -11,26 +11,15 @@ declare(strict_types=1);
 
 namespace Rych\OTP\Tests;
 
-use Rych\OTP\Seed;
+use PHPUnit\Framework\TestCase;
 use Rych\OTP\TOTP;
 
 /**
  * RFC-6238 Time-Based One-Time Password Tests
  */
-class TOTPTest extends \PHPUnit\Framework\TestCase
+class TOTPTest extends TestCase
 {
-    /**
-     * @var Seed
-     */
-    protected $seed;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp() : void
-    {
-        $this->seed = new Seed("3132333435363738393031323334353637383930");
-    }
+    protected const SECRET = "12345678901234567890";
 
     /**
      * Data provider for test vectors
@@ -61,7 +50,7 @@ class TOTPTest extends \PHPUnit\Framework\TestCase
      */
     public function testCalculateMethodProducesExpectedValues($counter, $otp)
     {
-        $totp = new TOTP($this->seed);
+        $totp = new TOTP(self::SECRET);
         $this->assertEquals($otp, $totp->calculate($counter));
     }
 
@@ -76,7 +65,7 @@ class TOTPTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidateMethodValidatesExpectedValues($counter, $otp)
     {
-        $totp = new TOTP($this->seed);
+        $totp = new TOTP(self::SECRET);
         $this->assertTrue($totp->validate($otp, $counter));
     }
 }

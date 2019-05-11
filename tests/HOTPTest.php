@@ -11,26 +11,15 @@ declare(strict_types=1);
 
 namespace Rych\OTP\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Rych\OTP\HOTP;
-use Rych\OTP\Seed;
 
 /**
  * RFC-4226 HMAC-Based One-Time Password Tests
  */
-class HOTPTest extends \PHPUnit\Framework\TestCase
+class HOTPTest extends TestCase
 {
-    /**
-     * @var Seed
-     */
-    protected $seed;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp() : void
-    {
-        $this->seed = new Seed("3132333435363738393031323334353637383930");
-    }
+    protected const SECRET = "12345678901234567890";
 
     /**
      * Data provider for test vectors
@@ -65,7 +54,7 @@ class HOTPTest extends \PHPUnit\Framework\TestCase
      */
     public function testCalculateMethodProducesExpectedValues($counter, $otp)
     {
-        $hotp = new HOTP($this->seed);
+        $hotp = new HOTP(self::SECRET);
         $this->assertEquals($otp, $hotp->calculate($counter));
     }
 
@@ -80,7 +69,7 @@ class HOTPTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidateMethodValidatesExpectedValues($counter, $otp)
     {
-        $hotp = new HOTP($this->seed);
+        $hotp = new HOTP(self::SECRET);
         $this->assertTrue($hotp->validate($otp, $counter));
     }
 
@@ -98,7 +87,7 @@ class HOTPTest extends \PHPUnit\Framework\TestCase
     {
         // Window of 1, meaning we"ll allow the token to be ahead by no
         // more than one.
-        $hotp = new HOTP($this->seed, ["window" => 1]);
+        $hotp = new HOTP(self::SECRET, ["window" => 1]);
 
         // Token ahead by one (inside of window)
         $otp = "359152"; // Token counter value is 2
@@ -121,7 +110,7 @@ class HOTPTest extends \PHPUnit\Framework\TestCase
     {
         // Window of 1, meaning we"ll allow the token to be ahead by no
         // more than one.
-        $hotp = new HOTP($this->seed, ["window" => 1]);
+        $hotp = new HOTP(self::SECRET, ["window" => 1]);
 
         // Token ahead by two (outside of window)
         $otp = "359152"; // Token counter value is 2
